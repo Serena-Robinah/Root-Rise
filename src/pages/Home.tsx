@@ -15,11 +15,11 @@ export default function Home() {
   }, []);
 
   const ageGroups = [
-    { range: '0–1', label: 'Infants', img: 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?q=80&w=600&h=600&auto=format&fit=crop' },
-    { range: '2–4', label: 'Toddlers', img: 'https://images.unsplash.com/photo-1519457431-75514b723b69?q=80&w=600&h=600&auto=format&fit=crop' },
-    { range: '5–7', label: 'Preschool', img: 'https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?q=80&w=600&h=600&auto=format&fit=crop' },
-    { range: '8–10', label: 'Big Kids', img: 'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?q=80&w=600&h=600&auto=format&fit=crop' },
-    { range: '11–14', label: 'Teens', img: 'https://images.unsplash.com/photo-1602030638412-bb8dcc0bc8b0?q=80&w=600&h=600&auto=format&fit=crop' },
+    { range: '0–1', label: 'Infants', img: 'https://images.unsplash.com/photo-1544126592-807daa2b565b?q=80&w=400&h=400&auto=format&fit=crop' },
+    { range: '2–4', label: 'Toddlers', img: 'https://images.unsplash.com/photo-1519233940173-69272332650d?q=80&w=400&h=400&auto=format&fit=crop' },
+    { range: '5–7', label: 'Preschool', img: 'https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?q=80&w=400&h=400&auto=format&fit=crop' },
+    { range: '8–10', label: 'Big Kids', img: 'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?q=80&w=400&h=400&auto=format&fit=crop' },
+    { range: '11–14', label: 'Teens', img: 'https://images.unsplash.com/photo-1529139572177-393fbf05551c?q=80&w=400&h=400&auto=format&fit=crop' },
   ];
 
   return (
