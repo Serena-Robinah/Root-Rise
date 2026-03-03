@@ -15,11 +15,11 @@ export default function Home() {
   }, []);
 
   const ageGroups = [
-    { range: '0–1', label: 'Infants', img: 'https://picsum.photos/seed/baby/400/400' },
-    { range: '2–4', label: 'Toddlers', img: 'https://picsum.photos/seed/toddler/400/400' },
-    { range: '5–7', label: 'Preschool', img: 'https://picsum.photos/seed/preschool/400/400' },
-    { range: '8–10', label: 'Big Kids', img: 'https://picsum.photos/seed/bigkids/400/400' },
-    { range: '11–14', label: 'Teens', img: 'https://picsum.photos/seed/teens/400/400' },
+    { range: '0–1', label: 'Infants', img: 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?q=80&w=600&h=600&auto=format&fit=crop' },
+    { range: '2–4', label: 'Toddlers', img: 'https://images.unsplash.com/photo-1519457431-75514b723b69?q=80&w=600&h=600&auto=format&fit=crop' },
+    { range: '5–7', label: 'Preschool', img: 'https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?q=80&w=600&h=600&auto=format&fit=crop' },
+    { range: '8–10', label: 'Big Kids', img: 'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?q=80&w=600&h=600&auto=format&fit=crop' },
+    { range: '11–14', label: 'Teens', img: 'https://images.unsplash.com/photo-1602030638412-bb8dcc0bc8b0?q=80&w=600&h=600&auto=format&fit=crop' },
   ];
 
   return (
@@ -28,7 +28,7 @@ export default function Home() {
       <section className="relative h-[80vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://picsum.photos/seed/kids-hero/1920/1080?blur=2" 
+            src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?q=80&w=1920&h=1080&auto=format&fit=crop" 
             alt="Hero" 
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
@@ -151,7 +151,7 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative rounded-3xl overflow-hidden h-[400px] flex items-center">
           <img 
-            src="https://picsum.photos/seed/cta-kids/1200/600" 
+            src="https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?q=80&w=1200&h=600&auto=format&fit=crop" 
             alt="CTA" 
             className="absolute inset-0 w-full h-full object-cover"
             referrerPolicy="no-referrer"

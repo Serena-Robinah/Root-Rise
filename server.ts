@@ -69,14 +69,14 @@ if (productCount.count === 0) {
   `);
 
   const initialProducts = [
-    ["Organic Cotton Onesie", "Soft organic cotton for your newborn.", 25.00, "Onesies", "0–1", "Unisex", 50, "https://picsum.photos/seed/onesie/400/500"],
-    ["Denim Overalls", "Classic denim overalls for active toddlers.", 35.00, "Bottoms", "2–4", "Unisex", 30, "https://picsum.photos/seed/overalls/400/500"],
-    ["Floral Summer Dress", "Beautiful floral print dress for sunny days.", 45.00, "Dresses", "5–7", "Girls", 20, "https://picsum.photos/seed/dress/400/500"],
-    ["Graphic Tee - Space Explorer", "Cool space-themed graphic tee.", 18.00, "Tops", "8–10", "Boys", 40, "https://picsum.photos/seed/space-tee/400/500"],
-    ["Cozy Knit Sweater", "Warm knit sweater for chilly evenings.", 55.00, "Outerwear", "11–14", "Unisex", 15, "https://picsum.photos/seed/sweater/400/500"],
-    ["Linen Shorts", "Lightweight linen shorts for summer comfort.", 22.00, "Bottoms", "2–4", "Boys", 25, "https://picsum.photos/seed/shorts/400/500"],
-    ["Tutu Skirt", "Sparkly tutu skirt for little princesses.", 30.00, "Bottoms", "5–7", "Girls", 18, "https://picsum.photos/seed/tutu/400/500"],
-    ["Hooded Raincoat", "Waterproof raincoat with cute patterns.", 40.00, "Outerwear", "8–10", "Unisex", 12, "https://picsum.photos/seed/raincoat/400/500"],
+    ["Organic Cotton Onesie", "Soft organic cotton for your newborn.", 25.00, "Onesies", "0–1", "Unisex", 50, "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=400&h=500&auto=format&fit=crop"],
+    ["Denim Overalls", "Classic denim overalls for active toddlers.", 35.00, "Bottoms", "2–4", "Unisex", 30, "https://images.unsplash.com/photo-1519233940173-69272332650d?q=80&w=400&h=500&auto=format&fit=crop"],
+    ["Floral Summer Dress", "Beautiful floral print dress for sunny days.", 45.00, "Dresses", "5–7", "Girls", 20, "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?q=80&w=400&h=500&auto=format&fit=crop"],
+    ["Graphic Tee - Space Explorer", "Cool space-themed graphic tee.", 18.00, "Tops", "8–10", "Boys", 40, "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?q=80&w=400&h=500&auto=format&fit=crop"],
+    ["Cozy Knit Sweater", "Warm knit sweater for chilly evenings.", 55.00, "Outerwear", "11–14", "Unisex", 15, "https://images.unsplash.com/photo-1576053139778-7e32f2ae3cfd?q=80&w=400&h=500&auto=format&fit=crop"],
+    ["Linen Shorts", "Lightweight linen shorts for summer comfort.", 22.00, "Bottoms", "2–4", "Boys", 25, "https://images.unsplash.com/photo-1591335297743-533298868677?q=80&w=400&h=500&auto=format&fit=crop"],
+    ["Tutu Skirt", "Sparkly tutu skirt for little princesses.", 30.00, "Bottoms", "5–7", "Girls", 18, "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?q=80&w=400&h=500&auto=format&fit=crop"],
+    ["Hooded Raincoat", "Waterproof raincoat with cute patterns.", 40.00, "Outerwear", "8–10", "Unisex", 12, "https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?q=80&w=400&h=500&auto=format&fit=crop"],
   ];
 
   initialProducts.forEach(p => insertProduct.run(...p));
