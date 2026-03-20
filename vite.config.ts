@@ -16,6 +16,8 @@ export default defineConfig(({mode}) => {
       },
     },
     server: {
+     // port: 5173, // make sure frontend is on 5173
+      //strictPort: true, // fails if 5173 is taken
       middlewareMode: true,
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
