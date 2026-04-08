@@ -123,7 +123,7 @@ export default function ProductDetails() {
             </div>
             <div className="text-center space-y-2">
               <RefreshCcw className="w-8 h-8 text-primary-green mx-auto" />
-              <p className="text-[10px] font-bold text-zinc-500 uppercase">30 Day Return</p>
+              <p className="text-[10px] font-bold text-zinc-500 uppercase">14 Day Return</p>
             </div>
           </div>
         </motion.div>

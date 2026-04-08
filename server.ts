@@ -69,7 +69,7 @@ if (productCount.count === 0) {
   `);
 
   const initialProducts = [
-    ["Organic Cotton Onesie", "Soft organic cotton for your newborn.", 25.00, "Onesies", "0–1", "Unisex", 50, "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=400&h=500&auto=format&fit=crop"],
+    [" Cotton dress ", "Soft organic cotton for your newborn.", 25.00, "Onesies", "0–1", "Unisex", 50, "/root-pics/root-pics/toddler dress.jpeg"],
     ["Denim Overalls", "Classic denim overalls for active toddlers.", 35.00, "Bottoms", "2–4", "Unisex", 30, "https://images.unsplash.com/photo-1519233940173-69272332650d?q=80&w=400&h=500&auto=format&fit=crop"],
     ["Floral Summer Dress", "Beautiful floral print dress for sunny days.", 45.00, "Dresses", "5–7", "Girls", 20, "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?q=80&w=400&h=500&auto=format&fit=crop"],
     ["Graphic Tee - Space Explorer", "Cool space-themed graphic tee.", 18.00, "Tops", "8–10", "Boys", 40, "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?q=80&w=400&h=500&auto=format&fit=crop"],

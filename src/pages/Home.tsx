@@ -15,11 +15,11 @@ export default function Home() {
   }, []);
 
   const ageGroups = [
-    { range: '0–1', label: 'Infants', img: '/root-pics/root-pics/one.jpeg' },
-    { range: '2–4', label: 'Toddlers', img: 'https://images.unsplash.com/photo-1519233940173-69272332650d?q=80&w=400&h=400&auto=format&fit=crop' },
-    { range: '5–7', label: 'Preschool', img: 'https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?q=80&w=400&h=400&auto=format&fit=crop' },
-    { range: '8–10', label: 'Big Kids', img: 'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?q=80&w=400&h=400&auto=format&fit=crop' },
-    { range: '11–14', label: 'Teens', img: 'https://images.unsplash.com/photo-1529139572177-393fbf05551c?q=80&w=400&h=400&auto=format&fit=crop' },
+    { range: '0–1', label: 'Infants', img: '/root-pics/root-pics/infant dress.jpeg' },
+    { range: '2–4', label: 'Toddlers', img: '/root-pics/root-pics/toddler dress.jpeg' },
+    { range: '5–7', label: 'Preschool', img: '/root-pics/root-pics/preschool jean.jpeg' },
+    { range: '8–10', label: 'Big Kids', img: '/root-pics/root-pics/big kids.jpeg' },
+    { range: '11–14', label: 'Teens', img: '/root-pics/root-pics/teen bags.jpeg' },
   ];
 
   return (
@@ -72,7 +72,7 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {[
             { icon: ShieldCheck, title: 'Safe & Natural', desc: '100% organic materials' },
-            { icon: Truck, title: 'Fast Delivery', desc: 'Free on orders over $50' },
+            { icon: Truck, title: 'Fast Delivery', desc: 'quick and safe delivery means' },
             { icon: Heart, title: 'Family First', desc: 'Designed with love' },
             { icon: Star, title: 'Top Quality', desc: 'Durable for active play' },
           ].map((f, i) => (
