@@ -13,8 +13,8 @@ app.use(cors());
 app.use(express.json());
 
 // Initialize database and schema
+await initializeDatabase();
 const db = getDatabase();
-initializeDatabase(db);
 
 // Public API
 app.use('/api/products', createProductRoutes(db));

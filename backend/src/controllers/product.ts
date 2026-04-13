@@ -1,24 +1,23 @@
 import { ProductService } from '../services';
-import Database from 'better-sqlite3';
 
 export class ProductController {
-  constructor(private db: Database.Database) {}
+  constructor(private db?: any) {}
 
-  getAll(req, res) {
+  async getAll(req, res) {
     try {
       const productService = new ProductService(this.db);
-      const products = productService.getAllProducts();
+      const products = await productService.getAllProducts();
       res.json(products);
     } catch (error) {
       res.status(500).json({ error: 'Failed to fetch products' });
     }
   }
 
-  getById(req, res) {
+  async getById(req, res) {
     try {
       const { id } = req.params;
       const productService = new ProductService(this.db);
-      const product = productService.getProductById(Number(id));
+      const product = await productService.getProductById(Number(id));
 
       if (!product) {
         res.status(404).json({ error: 'Product not found' });
@@ -31,7 +30,7 @@ export class ProductController {
     }
   }
 
-  create(req, res) {
+  async create(req, res) {
     try {
       const { name, description, price, category, age_group, gender, stock, image_url } = req.body;
 
@@ -41,7 +40,7 @@ export class ProductController {
       }
 
       const productService = new ProductService(this.db);
-      const id = productService.createProduct({
+      const id = await productService.createProduct({
         name,
         description,
         price,
@@ -58,13 +57,13 @@ export class ProductController {
     }
   }
 
-  update(req, res) {
+  async update(req, res) {
     try {
       const { id } = req.params;
       const { name, description, price, category, age_group, gender, stock, image_url } = req.body;
 
       const productService = new ProductService(this.db);
-      productService.updateProduct(Number(id), {
+      await productService.updateProduct(Number(id), {
         name,
         description,
         price,
@@ -81,19 +80,19 @@ export class ProductController {
     }
   }
 
-  delete(req, res) {
+  async delete(req, res) {
     try {
       const { id } = req.params;
       const productService = new ProductService(this.db);
 
-      if (productService.hasOrders(Number(id))) {
+      if (await productService.hasOrders(Number(id))) {
         res.status(400).json({
           error: 'Cannot delete product that has been ordered. Try setting stock to 0 instead.',
         });
         return;
       }
 
-      productService.deleteProduct(Number(id));
+      await productService.deleteProduct(Number(id));
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ error: 'Failed to delete product' });

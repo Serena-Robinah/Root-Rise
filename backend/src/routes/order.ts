@@ -1,19 +1,18 @@
 import { Router } from 'express';
 import { OrderController } from '../controllers/order';
-import Database from 'better-sqlite3';
 
-export function createOrderRoutes(db: Database.Database) {
+export function createOrderRoutes(_db?: any) {
   const router = Router();
-  const orderController = new OrderController(db);
+  const orderController = new OrderController();
 
   router.post('/', (req, res) => orderController.create(req, res));
 
   return router;
 }
 
-export function createAdminOrderRoutes(db: Database.Database) {
+export function createAdminOrderRoutes(_db?: any) {
   const router = Router();
-  const orderController = new OrderController(db);
+  const orderController = new OrderController();
 
   router.get('/', (req, res) => orderController.getAll(req, res));
   router.get('/:id', (req, res) => orderController.getById(req, res));

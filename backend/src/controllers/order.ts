@@ -1,25 +1,24 @@
 import { OrderService } from '../services';
-import Database from 'better-sqlite3';
 import type { Response } from 'express';
 
 export class OrderController {
-  constructor(private db: Database.Database) {}
+  constructor(private db?: any) {}
 
-  getAll(req, res) {
+  async getAll(req, res) {
     try {
       const orderService = new OrderService(this.db);
-      const orders = orderService.getAllOrders();
+      const orders = await orderService.getAllOrders();
       res.json(orders);
     } catch (error) {
       res.status(500).json({ error: 'Failed to fetch orders' });
     }
   }
 
-  getById(req, res) {
+  async getById(req, res) {
     try {
       const { id } = req.params;
       const orderService = new OrderService(this.db);
-      const order = orderService.getOrderById(Number(id));
+      const order = await orderService.getOrderById(Number(id));
 
       if (!order) {
         res.status(404).json({ error: 'Order not found' });
@@ -32,7 +31,7 @@ export class OrderController {
     }
   }
 
-  create(req, res) {
+  async create(req, res) {
     try {
       const { userId, items, totalAmount, shippingInfo } = req.body;
 
@@ -42,15 +41,15 @@ export class OrderController {
       }
 
       const orderService = new OrderService(this.db);
-      const orderId = orderService.createOrder(userId, items, totalAmount, shippingInfo);
+      const orderId = await orderService.createOrder(userId, items, totalAmount, shippingInfo);
 
       res.json({ success: true, orderId });
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ error: error.message || 'Failed to create order' });
     }
   }
 
-  updateStatus(req, res) {
+  async updateStatus(req, res) {
     try {
       const { id } = req.params;
       const { status } = req.body;
@@ -69,7 +68,7 @@ export class OrderController {
       }
 
       const orderService = new OrderService(this.db);
-      orderService.updateOrderStatus(Number(id), status);
+      await orderService.updateOrderStatus(Number(id), status as any);
 
       res.json({ success: true });
     } catch (error) {
@@ -77,11 +76,11 @@ export class OrderController {
     }
   }
 
-  delete(req, res) {
+  async delete(req, res) {
     try {
       const { id } = req.params;
       const orderService = new OrderService(this.db);
-      orderService.deleteOrder(Number(id));
+      await orderService.deleteOrder(Number(id));
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ error: 'Failed to delete order' });
@@ -91,14 +90,15 @@ export class OrderController {
   async getStats(req: any, res: Response): Promise<void> {
     try {
       const orderService = new OrderService(this.db);
-      const stats = orderService.getStats();
-      const productService = new (await import('../services')).ProductService(this.db);
+      const stats = await orderService.getStats();
+      const { ProductService } = await import('../services');
+      const productService = new ProductService(this.db);
 
       res.json({
         totalOrders: stats.totalOrders,
         pendingOrders: stats.pendingOrders,
-        totalProducts: productService.getProductCount(),
-        lowStockItems: productService.getLowStockCount(),
+        totalProducts: await productService.getProductCount(),
+        lowStockItems: await productService.getLowStockCount(),
         totalRevenue: stats.totalRevenue,
       });
     } catch (error) {

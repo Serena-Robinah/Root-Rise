@@ -1,10 +1,9 @@
 import { Router } from 'express';
 import { ProductController } from '../controllers/product';
-import Database from 'better-sqlite3';
 
-export function createProductRoutes(db: Database.Database) {
+export function createProductRoutes(_db?: any) {
   const router = Router();
-  const productController = new ProductController(db);
+  const productController = new ProductController();
 
   router.get('/', (req, res) => productController.getAll(req, res));
   router.get('/:id', (req, res) => productController.getById(req, res));
@@ -12,9 +11,9 @@ export function createProductRoutes(db: Database.Database) {
   return router;
 }
 
-export function createAdminProductRoutes(db: Database.Database) {
+export function createAdminProductRoutes(_db?: any) {
   const router = Router();
-  const productController = new ProductController(db);
+  const productController = new ProductController();
 
   router.post('/', (req, res) => productController.create(req, res));
   router.put('/:id', (req, res) => productController.update(req, res));

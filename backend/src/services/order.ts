@@ -1,4 +1,4 @@
-import Database from 'better-sqlite3';
+import { prisma } from '../config/database';
 import { OrderModel, OrderItemModel, ProductModel } from '../models';
 import type { Order, OrderStatus } from '@shared/types';
 
@@ -12,73 +12,61 @@ export class OrderService {
   private orderModel: OrderModel;
   private orderItemModel: OrderItemModel;
   private productModel: ProductModel;
-  private db: Database.Database;
+  private db: any;
 
-  constructor(db: Database.Database) {
+  constructor(db: any) {
     this.db = db;
     this.orderModel = new OrderModel(db);
     this.orderItemModel = new OrderItemModel(db);
     this.productModel = new ProductModel(db);
   }
-
-  getAllOrders(): Order[] {
+  async getAllOrders(): Promise<Order[]> {
     return this.orderModel.findAll();
   }
 
-  getOrderById(id: number): (Order & { items: any[] }) | null {
-    const order = this.orderModel.findById(id);
+  async getOrderById(id: number): Promise<(Order & { items: any[] }) | null> {
+    const order = await this.orderModel.findById(id);
     if (!order) return null;
-    const items = this.orderItemModel.findByOrderId(id);
-    return { ...order, items };
+    const items = await this.orderItemModel.findByOrderId(id);
+    return { ...order, items } as any;
   }
 
-  createOrder(
+  async createOrder(
     userId: number | null,
     items: Array<{ id: number; quantity: number; price: number }>,
     totalAmount: number,
     shippingInfo: { fullName: string; phone: string; address: string }
-  ): number {
-    const transaction = this.db.transaction(() => {
-      const orderId = this.orderModel.create(
-        userId,
-        totalAmount,
-        shippingInfo.fullName,
-        shippingInfo.phone,
-        shippingInfo.address
-      );
-
+  ): Promise<number> {
+    const result = await prisma.$transaction(async (tx) => {
+      const o = await tx.order.create({ data: { userId, total_amount: totalAmount, full_name: shippingInfo.fullName, phone: shippingInfo.phone, address: shippingInfo.address } as any });
       for (const item of items) {
-        this.orderItemModel.create(orderId, item.id, item.quantity, item.price);
-        // Update product stock
-        const product = this.productModel.findById(item.id);
-        if (product) {
-          this.productModel.update(item.id, {
-            ...product,
-            stock: product.stock - item.quantity,
-          });
+        await tx.orderItem.create({ data: { orderId: o.id, productId: item.id, quantity: item.quantity, price: item.price } });
+        // decrement stock
+        const prod = await tx.product.findUnique({ where: { id: item.id } });
+        if (prod) {
+          await tx.product.update({ where: { id: item.id }, data: { stock: prod.stock - item.quantity } as any });
         }
       }
-
-      return orderId;
+      return o.id;
     });
 
-    return transaction();
+    return result as number;
   }
 
-  updateOrderStatus(id: number, status: OrderStatus): void {
-    this.orderModel.updateStatus(id, status);
+  async updateOrderStatus(id: number, status: OrderStatus): Promise<void> {
+    await this.orderModel.updateStatus(id, status);
   }
 
-  deleteOrder(id: number): void {
-    this.orderItemModel.deleteByOrderId(id);
-    this.orderModel.delete(id);
+  async deleteOrder(id: number): Promise<void> {
+    await this.orderItemModel.deleteByOrderId(id);
+    await this.orderModel.delete(id);
   }
 
-  getStats(): OrderStats {
+  async getStats(): Promise<OrderStats> {
     return {
-      totalOrders: this.orderModel.count(),
-      pendingOrders: this.orderModel.countByStatus('Pending'),
-      totalRevenue: this.orderModel.sumRevenue(),
+      totalOrders: await this.orderModel.count(),
+      pendingOrders: await this.orderModel.countByStatus('Pending'),
+      totalRevenue: await this.orderModel.sumRevenue(),
     };
   }
 }

@@ -1,177 +1,121 @@
-import Database from 'better-sqlite3';
 import type { Product, User, Order, OrderItem } from '@shared/types';
+import { prisma } from '../config/database';
 //import { API_ENDPOINTS } from '@shared/constants';
 
 export class UserModel {
-  constructor(private db: Database.Database) {}
+  constructor(private db: any) {}
 
-  findByEmail(email: string): User | undefined {
-    const stmt = this.db.prepare('SELECT * FROM users WHERE email = ?');
-    return stmt.get(email) as User | undefined;
+  async findByEmail(email: string): Promise<User | null> {
+    return prisma.user.findUnique({ where: { email } }) as Promise<User | null>;
   }
 
-  findById(id: number): User | undefined {
-    const stmt = this.db.prepare('SELECT * FROM users WHERE id = ?');
-    return stmt.get(id) as User | undefined;
+  async findById(id: number): Promise<User | null> {
+    return prisma.user.findUnique({ where: { id } }) as Promise<User | null>;
   }
 
-  create(name: string, email: string, passwordHash: string, role: string = 'customer'): number {
-    const stmt = this.db.prepare('INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)');
-    const result = stmt.run(name, email, passwordHash, role);
-    return result.lastInsertRowid as number;
+  async create(name: string, email: string, passwordHash: string, role: string = 'customer'): Promise<number> {
+    const u = await prisma.user.create({ data: { name, email, password_hash: passwordHash, role } });
+    return u.id;
   }
 
-  countByRole(role: string): number {
-    const stmt = this.db.prepare('SELECT COUNT(*) as count FROM users WHERE role = ?');
-    const result = stmt.get(role) as { count: number };
-    return result.count;
+  async countByRole(role: string): Promise<number> {
+    return prisma.user.count({ where: { role } });
   }
 }
 
 export class ProductModel {
-  constructor(private db: Database.Database) {}
+  constructor(private db: any) {}
 
-  findAll(): Product[] {
-    const stmt = this.db.prepare('SELECT * FROM products');
-    return stmt.all() as Product[];
+  async findAll(): Promise<Product[]> {
+    return prisma.product.findMany() as Promise<Product[]>;
   }
 
-  findById(id: number): Product | undefined {
-    const stmt = this.db.prepare('SELECT * FROM products WHERE id = ?');
-    return stmt.get(id) as Product | undefined;
+  async findById(id: number): Promise<Product | null> {
+    return prisma.product.findUnique({ where: { id } }) as Promise<Product | null>;
   }
 
-  create(product: Omit<Product, 'id'>): number {
-    const stmt = this.db.prepare(`
-      INSERT INTO products (name, description, price, category, age_group, gender, stock, image_url)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-    const result = stmt.run(
-      product.name,
-      product.description,
-      product.price,
-      product.category,
-      product.age_group,
-      product.gender,
-      product.stock,
-      product.image_url
-    );
-    return result.lastInsertRowid as number;
+  async create(product: Omit<Product, 'id'>): Promise<number> {
+    const p = await prisma.product.create({ data: product as any });
+    return p.id;
   }
 
-  update(id: number, product: Partial<Omit<Product, 'id'>>): void {
-    const fields = Object.keys(product)
-      .map(k => `${k} = ?`)
-      .join(', ');
-    const values = Object.values(product);
-    const stmt = this.db.prepare(`UPDATE products SET ${fields} WHERE id = ?`);
-    stmt.run(...values, id);
+  async update(id: number, product: Partial<Omit<Product, 'id'>>): Promise<void> {
+    await prisma.product.update({ where: { id }, data: product as any });
   }
 
-  delete(id: number): void {
-    const stmt = this.db.prepare('DELETE FROM products WHERE id = ?');
-    stmt.run(id);
+  async delete(id: number): Promise<void> {
+    await prisma.product.delete({ where: { id } });
   }
 
-  count(): number {
-    const stmt = this.db.prepare('SELECT COUNT(*) as count FROM products');
-    const result = stmt.get() as { count: number };
-    return result.count;
+  async count(): Promise<number> {
+    return prisma.product.count();
   }
 
-  countLowStock(): number {
-    const stmt = this.db.prepare('SELECT COUNT(*) as count FROM products WHERE stock < 5');
-    const result = stmt.get() as { count: number };
-    return result.count;
+  async countLowStock(): Promise<number> {
+    return prisma.product.count({ where: { stock: { lt: 5 } } });
   }
 
-  countWithOrders(productId: number): number {
-    const stmt = this.db.prepare('SELECT COUNT(*) as count FROM order_items WHERE product_id = ?');
-    const result = stmt.get(productId) as { count: number };
-    return result.count;
+  async countWithOrders(productId: number): Promise<number> {
+    return prisma.orderItem.count({ where: { productId } });
   }
 }
 
 export class OrderModel {
-  constructor(private db: Database.Database) {}
+  constructor(private db: any) {}
 
-  findAll(): Order[] {
-    const stmt = this.db.prepare('SELECT * FROM orders ORDER BY created_at DESC');
-    return stmt.all() as Order[];
+  async findAll(): Promise<Order[]> {
+    return prisma.order.findMany({ orderBy: { created_at: 'desc' } }) as Promise<Order[]>;
   }
 
-  findById(id: number): Order | undefined {
-    const stmt = this.db.prepare('SELECT * FROM orders WHERE id = ?');
-    return stmt.get(id) as Order | undefined;
+  async findById(id: number): Promise<Order | null> {
+    return prisma.order.findUnique({ where: { id } }) as Promise<Order | null>;
   }
 
-  create(
+  async create(
     userId: number | null,
     totalAmount: number,
     fullName: string,
     phone: string,
     address: string
-  ): number {
-    const stmt = this.db.prepare(`
-      INSERT INTO orders (user_id, total_amount, full_name, phone, address)
-      VALUES (?, ?, ?, ?, ?)
-    `);
-    const result = stmt.run(userId, totalAmount, fullName, phone, address);
-    return result.lastInsertRowid as number;
+  ): Promise<number> {
+    const o = await prisma.order.create({ data: { userId, total_amount: totalAmount, full_name: fullName, phone, address } as any });
+    return o.id;
   }
 
-  updateStatus(id: number, status: string): void {
-    const stmt = this.db.prepare('UPDATE orders SET status = ? WHERE id = ?');
-    stmt.run(status, id);
+  async updateStatus(id: number, status: string): Promise<void> {
+    await prisma.order.update({ where: { id }, data: { status } });
   }
 
-  delete(id: number): void {
-    const stmt = this.db.prepare('DELETE FROM orders WHERE id = ?');
-    stmt.run(id);
+  async delete(id: number): Promise<void> {
+    await prisma.order.delete({ where: { id } });
   }
 
-  count(): number {
-    const stmt = this.db.prepare('SELECT COUNT(*) as count FROM orders');
-    const result = stmt.get() as { count: number };
-    return result.count;
+  async count(): Promise<number> {
+    return prisma.order.count();
   }
 
-  countByStatus(status: string): number {
-    const stmt = this.db.prepare('SELECT COUNT(*) as count FROM orders WHERE status = ?');
-    const result = stmt.get(status) as { count: number };
-    return result.count;
+  async countByStatus(status: string): Promise<number> {
+    return prisma.order.count({ where: { status } });
   }
 
-  sumRevenue(): number {
-    const stmt = this.db.prepare("SELECT SUM(total_amount) as total FROM orders WHERE status != 'Cancelled'");
-    const result = stmt.get() as { total: number | null };
-    return result.total || 0;
+  async sumRevenue(): Promise<number> {
+    const r = await prisma.order.aggregate({ _sum: { total_amount: true }, where: { status: { not: 'Cancelled' } } as any });
+    return (r._sum.total_amount as number) || 0;
   }
 }
 
 export class OrderItemModel {
-  constructor(private db: Database.Database) {}
+  constructor(private db: any) {}
 
-  findByOrderId(orderId: number): OrderItem[] {
-    const stmt = this.db.prepare(`
-      SELECT oi.*, p.name as product_name, p.image_url 
-      FROM order_items oi 
-      JOIN products p ON oi.product_id = p.id 
-      WHERE oi.order_id = ?
-    `);
-    return stmt.all(orderId) as OrderItem[];
+  async findByOrderId(orderId: number): Promise<OrderItem[]> {
+    return prisma.orderItem.findMany({ where: { orderId }, include: { product: true } }) as Promise<OrderItem[]>;
   }
 
-  create(orderId: number, productId: number, quantity: number, price: number): void {
-    const stmt = this.db.prepare(`
-      INSERT INTO order_items (order_id, product_id, quantity, price)
-      VALUES (?, ?, ?, ?)
-    `);
-    stmt.run(orderId, productId, quantity, price);
+  async create(orderId: number, productId: number, quantity: number, price: number): Promise<void> {
+    await prisma.orderItem.create({ data: { orderId, productId, quantity, price } });
   }
 
-  deleteByOrderId(orderId: number): void {
-    const stmt = this.db.prepare('DELETE FROM order_items WHERE order_id = ?');
-    stmt.run(orderId);
+  async deleteByOrderId(orderId: number): Promise<void> {
+    await prisma.orderItem.deleteMany({ where: { orderId } });
   }
 }

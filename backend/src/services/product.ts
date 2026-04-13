@@ -1,43 +1,41 @@
-import Database from 'better-sqlite3';
 import { ProductModel } from '../models';
 import type { Product } from '@shared/types';
 
 export class ProductService {
   private productModel: ProductModel;
 
-  constructor(db: Database.Database) {
+  constructor(db: any) {
     this.productModel = new ProductModel(db);
   }
-
-  getAllProducts(): Product[] {
+  async getAllProducts(): Promise<Product[]> {
     return this.productModel.findAll();
   }
 
-  getProductById(id: number): Product | undefined {
+  async getProductById(id: number): Promise<Product | null> {
     return this.productModel.findById(id);
   }
 
-  createProduct(product: Omit<Product, 'id'>): number {
+  async createProduct(product: Omit<Product, 'id'>): Promise<number> {
     return this.productModel.create(product);
   }
 
-  updateProduct(id: number, product: Partial<Omit<Product, 'id'>>): void {
-    this.productModel.update(id, product);
+  async updateProduct(id: number, product: Partial<Omit<Product, 'id'>>): Promise<void> {
+    await this.productModel.update(id, product);
   }
 
-  deleteProduct(id: number): void {
-    this.productModel.delete(id);
+  async deleteProduct(id: number): Promise<void> {
+    await this.productModel.delete(id);
   }
 
-  getProductCount(): number {
+  async getProductCount(): Promise<number> {
     return this.productModel.count();
   }
 
-  getLowStockCount(): number {
+  async getLowStockCount(): Promise<number> {
     return this.productModel.countLowStock();
   }
 
-  hasOrders(productId: number): boolean {
-    return this.productModel.countWithOrders(productId) > 0;
+  async hasOrders(productId: number): Promise<boolean> {
+    return (await this.productModel.countWithOrders(productId)) > 0;
   }
 }

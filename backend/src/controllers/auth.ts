@@ -5,7 +5,7 @@ import Database from 'better-sqlite3';
 // @ts-ignore
 
 export class AuthController {
-  constructor(private db: Database.Database) {}
+  constructor(private db?: any) {}
 
   async signup(req, res) {
     try {
