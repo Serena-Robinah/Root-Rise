@@ -1,5 +1,9 @@
 {
-  "watch": ["server.ts", "routes", "controllers"],
+  "watch": ["backend/src"],
   "ext": "ts",
-  "exec": "tsx server.ts"
+  "exec": "npx tsx --tsconfig-paths backend/src/server.ts",
+  "env": {
+    "NODE_ENV": "development",
+    "TS_NODE_PROJECT": "./backend/tsconfig.json"
+  }
 }

@@ -1,0 +1,11 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
+export default function AuthModal({ isOpen, onClose, redirectPath = '/checkout' }) {
+    const navigate = useNavigate();
+    if (!isOpen)
+        return null;
+    return (_jsx(AnimatePresence, { children: _jsxs("div", { className: "fixed inset-0 z-[100] flex items-center justify-center p-4", children: [_jsx(motion.div, { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, onClick: onClose, className: "absolute inset-0 bg-primary-green/40 backdrop-blur-sm" }), _jsxs(motion.div, { initial: { opacity: 0, scale: 0.9, y: 20 }, animate: { opacity: 1, scale: 1, y: 0 }, exit: { opacity: 0, scale: 0.9, y: 20 }, className: "relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden", children: [_jsx("button", { onClick: onClose, className: "absolute top-6 right-6 p-2 text-zinc-400 hover:text-primary-green transition-colors", children: _jsx(X, { className: "w-6 h-6" }) }), _jsxs("div", { className: "p-8 sm:p-12 text-center space-y-8", children: [_jsxs("div", { className: "space-y-2", children: [_jsx("h2", { className: "text-3xl font-display font-bold text-primary-green", children: "Join the Family" }), _jsx("p", { className: "text-zinc-500", children: "Please login or sign up to place your order and track your delivery." })] }), _jsxs("div", { className: "space-y-4", children: [_jsx("button", { onClick: () => navigate(`/login?redirect=${redirectPath}`), className: "w-full btn-primary py-4 text-lg", children: "Login to Account" }), _jsx("button", { onClick: () => navigate(`/signup?redirect=${redirectPath}`), className: "w-full border-2 border-primary-green text-primary-green py-4 rounded-xl font-bold hover:bg-primary-green/5 transition-colors", children: "Create New Account" })] }), _jsx("button", { onClick: onClose, className: "text-sm font-medium text-zinc-400 hover:text-primary-green transition-colors", children: "Continue Browsing" })] }), _jsx("div", { className: "bg-soft-cream p-4 text-center", children: _jsx("p", { className: "text-xs text-primary-green/60 font-medium", children: "Root & Rise Kids \u2013 Safe & Natural for your little ones." }) })] })] }) }));
+}
+//# sourceMappingURL=AuthModal.js.map
