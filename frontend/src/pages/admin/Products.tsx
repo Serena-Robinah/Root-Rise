@@ -56,28 +56,10 @@ export default function AdminProducts() {
 
     try {
       if (editingProduct) {
-        await adminService.updateProduct(editingProduct.id, {
-          name: data.name as string,
-          description: data.description as string,
-          price: parseFloat(data.price as string),
-          stock: parseInt(data.stock as string),
-          category: data.category as string,
-          age_group: data.age_group as string,
-          gender: data.gender as string,
-          image_url: data.image_url as string,
-        });
+        await adminService.updateProduct(editingProduct.id, formData);
         enqueueSnackbar('Product updated!', { variant: 'success' });
       } else {
-        await adminService.createProduct({
-          name: data.name as string,
-          description: data.description as string,
-          price: parseFloat(data.price as string),
-          stock: parseInt(data.stock as string),
-          category: data.category as string,
-          age_group: data.age_group as string,
-          gender: data.gender as string,
-          image_url: data.image_url as string,
-        });
+        await adminService.createProduct(formData);
         enqueueSnackbar('Product added!', { variant: 'success' });
       }
       setIsModalOpen(false);
@@ -255,13 +237,18 @@ export default function AdminProducts() {
                  {GENDERS.map(gender => <MenuItem key={gender} value={gender}>{gender}</MenuItem>)}
                </Select>
             </FormControl>
-            <TextField 
-              name="image_url" 
-              label="Image URL" 
-              fullWidth 
-              defaultValue={editingProduct?.image_url} 
-              required 
-            />
+            <FormControl fullWidth>
+              <InputLabel shrink>Product Image</InputLabel>
+              <input 
+                type="file" 
+                name="image" 
+                accept="image/*"
+                className="mt-6 w-full p-2 border border-zinc-300 rounded-xl"
+              />
+              {editingProduct?.image_url && (
+                <p className="text-xs text-zinc-500 mt-2">Current: {editingProduct.image_url}</p>
+              )}
+            </FormControl>
           </DialogContent>
           <DialogActions className="p-6">
             <Button onClick={() => setIsModalOpen(false)} className="text-zinc-500 font-bold">Cancel</Button>

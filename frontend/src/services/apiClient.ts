@@ -13,9 +13,11 @@ class ApiClient {
     data?: any,
     token?: string
   ): Promise<T> {
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-    };
+    const headers: HeadersInit = {};
+    
+    if (!(data instanceof FormData)) {
+      headers['Content-Type'] = 'application/json';
+    }
 
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
@@ -24,7 +26,7 @@ class ApiClient {
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method,
       headers,
-      body: data ? JSON.stringify(data) : undefined,
+      body: data instanceof FormData ? data : (data ? JSON.stringify(data) : undefined),
     });
 
     if (!response.ok) {

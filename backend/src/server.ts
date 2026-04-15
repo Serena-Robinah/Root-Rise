@@ -11,6 +11,8 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+import path from 'path';
+app.use('/uploads', express.static(path.join(process.cwd(), 'public/uploads')));
 
 // Initialize database and schema
 await initializeDatabase();
@@ -21,11 +23,23 @@ app.use('/api/products', createProductRoutes(db));
 app.use('/api/auth', createAuthRoutes(db));
 app.use('/api/orders', createOrderRoutes(db));
 
+import { authenticateAdmin } from './middleware/auth';
+
 // Admin API
-app.use('/api/admin/products', createAdminProductRoutes(db));
-app.use('/api/admin/orders', createAdminOrderRoutes(db));
+app.use('/api/admin/products', authenticateAdmin, createAdminProductRoutes(db));
+app.use('/api/admin/orders', authenticateAdmin, createAdminOrderRoutes(db));
 
 app.get('/', (_req, res) => res.json({ status: 'ok' }));
+
+// Global Express Error Handler to prevent HTML proxy fallback locally
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error('[Global Express Error]:', err);
+  res.status(err.status || 500).json({
+    success: false,
+    error: 'Internal Server Error',
+    message: err.message || 'An unexpected server error occurred.'
+  });
+});
 
 app.listen(PORT, () => {
 	console.log(`Server listening on port ${PORT}`);

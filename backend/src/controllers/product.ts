@@ -3,17 +3,18 @@ import { ProductService } from '../services';
 export class ProductController {
   constructor(private db?: any) {}
 
-  async getAll(req, res) {
+  async getAll(req: any, res: any, next: any) {
     try {
       const productService = new ProductService(this.db);
       const products = await productService.getAllProducts();
-      res.json(products);
+      res.status(200).json(products);
     } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch products' });
+      console.error('[Error in ProductController.getAll]:', error);
+      res.status(500).json({ success: false, error: 'Failed to fetch products', details: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
-  async getById(req, res) {
+  async getById(req: any, res: any, next: any) {
     try {
       const { id } = req.params;
       const productService = new ProductService(this.db);
@@ -30,12 +31,20 @@ export class ProductController {
     }
   }
 
-  async create(req, res) {
+  async create(req: any, res: any, next: any) {
     try {
-      const { name, description, price, category, age_group, gender, stock, image_url } = req.body;
+      const { name, description, category, age_group, gender } = req.body;
+      const price = parseFloat(req.body.price);
+      const stock = parseInt(req.body.stock, 10);
+      let image_url = req.body.image_url;
 
-      if (!name || !price) {
-        res.status(400).json({ error: 'Missing required fields' });
+      if (req.file) {
+        // Construct the URL path to the uploaded file
+        image_url = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+      }
+
+      if (!name || isNaN(price)) {
+        res.status(400).json({ error: 'Missing required fields or invalid price' });
         return;
       }
 
@@ -57,21 +66,28 @@ export class ProductController {
     }
   }
 
-  async update(req, res) {
+  async update(req: any, res: any, next: any) {
     try {
       const { id } = req.params;
-      const { name, description, price, category, age_group, gender, stock, image_url } = req.body;
+      const { name, description, category, age_group, gender } = req.body;
+      const price = req.body.price !== undefined ? parseFloat(req.body.price) : undefined;
+      const stock = req.body.stock !== undefined ? parseInt(req.body.stock, 10) : undefined;
+      let image_url = req.body.image_url;
+
+      if (req.file) {
+        image_url = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+      }
 
       const productService = new ProductService(this.db);
       await productService.updateProduct(Number(id), {
         name,
         description,
-        price,
+        ...(price !== undefined && !isNaN(price) && { price }),
         category,
         age_group,
         gender,
-        stock,
-        image_url,
+        ...(stock !== undefined && !isNaN(stock) && { stock }),
+        ...(image_url && { image_url }),
       });
 
       res.json({ success: true });
@@ -80,7 +96,7 @@ export class ProductController {
     }
   }
 
-  async delete(req, res) {
+  async delete(req: any, res: any, next: any) {
     try {
       const { id } = req.params;
       const productService = new ProductService(this.db);

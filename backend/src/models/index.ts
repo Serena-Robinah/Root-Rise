@@ -64,11 +64,14 @@ export class OrderModel {
   constructor(private db: any) {}
 
   async findAll(): Promise<Order[]> {
-    return prisma.order.findMany({ orderBy: { created_at: 'desc' } }) as Promise<Order[]>;
+    const orders = await prisma.order.findMany({ orderBy: { created_at: 'desc' } });
+    return orders.map((o: any) => ({ ...o, user_id: o.userId })) as unknown as Promise<Order[]>;
   }
 
   async findById(id: number): Promise<Order | null> {
-    return prisma.order.findUnique({ where: { id } }) as Promise<Order | null>;
+    const o: any = await prisma.order.findUnique({ where: { id } });
+    if (!o) return null;
+    return { ...o, user_id: o.userId } as unknown as Order;
   }
 
   async create(
@@ -108,7 +111,14 @@ export class OrderItemModel {
   constructor(private db: any) {}
 
   async findByOrderId(orderId: number): Promise<OrderItem[]> {
-    return prisma.orderItem.findMany({ where: { orderId }, include: { product: true } }) as Promise<OrderItem[]>;
+    const items = await prisma.orderItem.findMany({ where: { orderId }, include: { product: true } });
+    return items.map((i: any) => ({
+      ...i,
+      order_id: i.orderId,
+      product_id: i.productId,
+      product_name: i.product.name,
+      image_url: i.product.image_url
+    })) as unknown as OrderItem[];
   }
 
   async create(orderId: number, productId: number, quantity: number, price: number): Promise<void> {
