@@ -21,24 +21,22 @@ export const CATEGORIES = [
 ] as const;
 
 export const API_BASE_URL = (() => {
-  // Prefer Vite env in frontend, then Node process env in backend, otherwise default
-  const viaImportMeta = (typeof import.meta !== 'undefined' && (import.meta as any).env && (import.meta as any).env.VITE_API_URL) ? (import.meta as any).env.VITE_API_URL : undefined;
-  const viaGlobalProcess = (globalThis as any).process?.env?.REACT_APP_API_URL || (globalThis as any).process?.env?.API_URL;
-  return viaImportMeta ?? viaGlobalProcess ?? 'http://localhost:3000';
+  const viaImportMeta = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_API_URL);
+  return viaImportMeta ?? '';
 })();
 
 export const API_ENDPOINTS = {
   // Auth
   SIGNUP: '/api/auth/signup',
   LOGIN: '/api/auth/login',
-  
+
   // Products
   PRODUCTS: '/api/products',
   PRODUCT_DETAIL: (id: number) => `/api/products/${id}`,
-  
+
   // Orders
   CREATE_ORDER: '/api/orders',
-  
+
   // Admin
   ADMIN_STATS: '/api/admin/stats',
   ADMIN_ORDERS: '/api/admin/orders',
@@ -51,4 +49,4 @@ export const API_ENDPOINTS = {
 } as const;
 
 export const JWT_TOKEN_KEY = 'auth_token';
-export const USER_KEY = 'user';
+export const USER_KEY = 'user'
