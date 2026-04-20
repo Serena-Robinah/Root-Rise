@@ -1,7 +1,7 @@
 import { ProductService } from '../services';
 
 export class ProductController {
-  constructor(private db?: any) {}
+  constructor(private db?: any) { }
 
   async getAll(req: any, res: any, next: any) {
     try {
@@ -40,7 +40,7 @@ export class ProductController {
 
       if (req.file) {
         // Construct the URL path to the uploaded file
-        image_url = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+        image_url = `/uploads/${req.file.filename}`;
       }
 
       if (!name || isNaN(price)) {
@@ -75,7 +75,7 @@ export class ProductController {
       let image_url = req.body.image_url;
 
       if (req.file) {
-        image_url = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+        image_url = `/uploads/${req.file.filename}`;
       }
 
       const productService = new ProductService(this.db);

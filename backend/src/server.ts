@@ -10,7 +10,8 @@ import { createOrderRoutes, createAdminOrderRoutes } from './routes/order';
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 import path from 'path';
 app.use('/uploads', express.static(path.join(process.cwd(), 'public/uploads')));
 
@@ -42,14 +43,14 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 });
 
 app.listen(PORT, () => {
-	console.log(`Server listening on port ${PORT}`);
+  console.log(`Server listening on port ${PORT}`);
 });
 
 process.on('uncaughtException', (err) => {
-	console.error('Uncaught exception:', err);
+  console.error('Uncaught exception:', err);
 });
 
 process.on('unhandledRejection', (reason) => {
-	console.error('Unhandled rejection:', reason);
+  console.error('Unhandled rejection:', reason);
 });
 
