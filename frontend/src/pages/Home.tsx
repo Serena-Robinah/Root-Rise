@@ -28,17 +28,17 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative h-[80vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?q=80&w=1920&h=1080&auto=format&fit=crop" 
-            alt="Hero" 
+          <img
+            src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?q=80&w=1920&h=1080&auto=format&fit=crop"
+            alt="Hero"
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-soft-cream via-soft-cream/80 to-transparent" />
         </div>
-        
+
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
@@ -60,7 +60,7 @@ export default function Home() {
                 <span>Shop Now</span>
                 <ArrowRight className="w-5 h-5" />
               </Link>
-              <Link to="/shop?category=Newborn" className="btn-accent text-lg px-10 py-4">
+              <Link to="/shop?age=0–1" className="btn-accent text-lg px-10 py-4">
                 View Newborns
               </Link>
             </div>
@@ -77,7 +77,7 @@ export default function Home() {
             { icon: Heart, title: 'Family First', desc: 'Designed with love' },
             { icon: Star, title: 'Top Quality', desc: 'Durable for active play' },
           ].map((f, i) => (
-            <motion.div 
+            <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -105,15 +105,15 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
           {ageGroups.map((age, i) => (
-            <Link 
-              key={i} 
+            <Link
+              key={i}
               to={`/shop?age=${age.range}`}
               className="group space-y-4 text-center"
             >
               <div className="aspect-square rounded-full overflow-hidden border-4 border-white shadow-md group-hover:border-accent-orange transition-all duration-300">
-                <img 
-                  src={age.img} 
-                  alt={age.label} 
+                <img
+                  src={age.img}
+                  alt={age.label}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   referrerPolicy="no-referrer"
                 />
@@ -151,9 +151,9 @@ export default function Home() {
       {/* CTA Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative rounded-3xl overflow-hidden h-[400px] flex items-center">
-          <img 
-            src="https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?q=80&w=1200&h=600&auto=format&fit=crop" 
-            alt="CTA" 
+          <img
+            src="https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?q=80&w=1200&h=600&auto=format&fit=crop"
+            alt="CTA"
             className="absolute inset-0 w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />
@@ -162,9 +162,9 @@ export default function Home() {
             <h2 className="text-4xl md:text-5xl font-display font-bold">Join our community of happy parents</h2>
             <p className="text-lg text-soft-cream/90">Sign up for our newsletter and get 10% off your first order!</p>
             <div className="flex gap-4">
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
+              <input
+                type="email"
+                placeholder="Enter your email"
                 className="flex-grow px-6 py-4 rounded-xl bg-white/10 border border-white/20 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-accent-orange"
               />
               <button className="btn-accent px-8">Subscribe</button>
