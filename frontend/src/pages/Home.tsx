@@ -16,11 +16,11 @@ export default function Home() {
   }, []);
 
   const ageGroups = [
-    { range: '0–1', label: 'Infants', img: '/root-pics/root-pics/infant dress.jpeg' },
-    { range: '2–4', label: 'Toddlers', img: '/root-pics/root-pics/toddler dress.jpeg' },
-    { range: '5–7', label: 'Preschool', img: '/root-pics/root-pics/preschool jean.jpeg' },
-    { range: '8–10', label: 'Big Kids', img: '/root-pics/root-pics/big kids.jpeg' },
-    { range: '11–14', label: 'Teens', img: '/root-pics/root-pics/teen bags.jpeg' },
+    { range: '0–1', label: 'Infants', img: '/root-pics/infant dress.jpeg' },
+    { range: '2–4', label: 'Toddlers', img: '/root-pics/toddler dress.jpeg' },
+    { range: '5–7', label: 'Preschool', img: '/root-pics/preschool jean.jpeg' },
+    { range: '8–10', label: 'Big Kids', img: '/root-pics/big kids.jpeg' },
+    { range: '11–14', label: 'Teens', img: '/root-pics/teen bags.jpeg' },
   ];
 
   return (
