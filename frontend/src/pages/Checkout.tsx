@@ -104,7 +104,7 @@ export default function Checkout() {
                   <input 
                     {...register('fullName')}
                     type="text" 
-                    placeholder="Jane Doe"
+                    placeholder="yours names please"
                     className="w-full pl-12 pr-4 py-4 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary-green/20"
                   />
                 </div>
@@ -118,7 +118,7 @@ export default function Checkout() {
                   <input 
                     {...register('phone')}
                     type="tel" 
-                    placeholder="+1 (555) 000-0000"
+                    placeholder="+256 000 000 000"
                     className="w-full pl-12 pr-4 py-4 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary-green/20"
                   />
                 </div>
@@ -131,7 +131,7 @@ export default function Checkout() {
                   <MapPin className="absolute left-4 top-4 w-5 h-5 text-zinc-400" />
                   <textarea 
                     {...register('address')}
-                    placeholder="Street address, City, State, ZIP"
+                    placeholder="Street address, City, State"
                     rows={4}
                     className="w-full pl-12 pr-4 py-4 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary-green/20"
                   />
@@ -160,7 +160,7 @@ export default function Checkout() {
                       <p className="text-xs text-zinc-400">Qty: {item.quantity}</p>
                     </div>
                   </div>
-                  <p className="font-bold text-sm text-primary-green">${(item.price * item.quantity).toFixed(2)}</p>
+                  <p className="font-bold text-sm text-primary-green">UGX{(item.price * item.quantity).toFixed(2)}</p>
                 </div>
               ))}
             </div>
@@ -168,7 +168,7 @@ export default function Checkout() {
             <div className="pt-6 border-t space-y-4">
               <div className="flex justify-between text-zinc-500">
                 <span>Subtotal</span>
-                <span className="font-bold text-zinc-800">${getTotal().toFixed(2)}</span>
+                <span className="font-bold text-zinc-800">UGX{getTotal().toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-zinc-500">
                 <span>Shipping</span>
@@ -176,7 +176,7 @@ export default function Checkout() {
               </div>
               <div className="pt-4 border-t flex justify-between items-end">
                 <span className="font-bold text-lg">Total</span>
-                <span className="text-3xl font-bold text-primary-green">${getTotal().toFixed(2)}</span>
+                <span className="text-3xl font-bold text-primary-green">UGX{getTotal().toFixed(2)}</span>
               </div>
             </div>
 
