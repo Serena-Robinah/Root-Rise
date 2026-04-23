@@ -133,7 +133,7 @@ export default function AdminOrders() {
                     <p className="text-xs text-zinc-400">{order.phone}</p>
                   </div>
                 </TableCell>
-                <TableCell className="font-bold text-primary-green">${order.total_amount.toFixed(2)}</TableCell>
+                <TableCell className="font-bold text-primary-green">UGX {order.total_amount.toLocaleString()}</TableCell>
                 <TableCell>
                   <Chip 
                     label={order.status} 
@@ -207,7 +207,7 @@ export default function AdminOrders() {
                   <div className="bg-soft-cream p-6 rounded-2xl space-y-3">
                     <div className="flex justify-between">
                       <span className="text-zinc-600">Items Total</span>
-                      <span className="font-bold">${selectedOrder.total_amount.toFixed(2)}</span>
+                      <span className="font-bold">UGX {selectedOrder.total_amount.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-zinc-600">Shipping</span>
@@ -215,7 +215,7 @@ export default function AdminOrders() {
                     </div>
                     <div className="pt-3 border-t border-primary-green/10 flex justify-between items-end">
                       <span className="font-bold text-primary-green">Grand Total</span>
-                      <span className="text-2xl font-bold text-primary-green">${selectedOrder.total_amount.toFixed(2)}</span>
+                      <span className="text-2xl font-bold text-primary-green">UGX {selectedOrder.total_amount.toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
@@ -230,10 +230,10 @@ export default function AdminOrders() {
                         <Avatar src={item.image_url} variant="rounded" className="w-12 h-12" />
                         <div>
                           <p className="font-bold text-primary-green">{item.product_name}</p>
-                          <p className="text-xs text-zinc-400">Qty: {item.quantity} × ${item.price.toFixed(2)}</p>
+                          <p className="text-xs text-zinc-400">Qty: {item.quantity} × UGX {item.price.toLocaleString()}</p>
                         </div>
                       </div>
-                      <p className="font-bold text-primary-green">${(item.quantity * item.price).toFixed(2)}</p>
+                      <p className="font-bold text-primary-green">UGX {(item.quantity * item.price).toLocaleString()}</p>
                     </div>
                   ))}
                 </div>

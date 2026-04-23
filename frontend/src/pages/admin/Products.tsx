@@ -126,7 +126,7 @@ export default function AdminProducts() {
                   </div>
                 </TableCell>
                 <TableCell className="text-zinc-500 font-medium">{product.category}</TableCell>
-                <TableCell className="font-bold text-primary-green">${product.price.toFixed(2)}</TableCell>
+                <TableCell className="font-bold text-primary-green">UGX {product.price.toLocaleString()}</TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-2">
                     <span className={`text-xs font-bold px-3 py-1 rounded-full ${
@@ -202,7 +202,7 @@ export default function AdminProducts() {
             <div className="grid grid-cols-2 gap-4">
               <TextField 
                 name="price" 
-                label="Price ($)" 
+                label="Price (UGX)" 
                 type="number" 
                 fullWidth 
                 defaultValue={editingProduct?.price} 

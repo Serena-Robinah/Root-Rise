@@ -4,6 +4,8 @@ import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import { motion, AnimatePresence } from 'motion/react';
 
+const formatUGX = (amount: number) => `UGX ${amount.toLocaleString()}`;
+
 export default function Cart() {
   const { items, removeItem, updateQuantity, getTotal } = useCartStore();
   const navigate = useNavigate();
@@ -47,7 +49,7 @@ export default function Cart() {
                 <div className="flex-grow space-y-1 text-center sm:text-left">
                   <h3 className="font-display font-bold text-xl text-primary-green">{item.name}</h3>
                   <p className="text-sm text-zinc-500">{item.category} • {item.age_group} Years</p>
-                  <p className="font-bold text-primary-green">${item.price.toFixed(2)}</p>
+                  <p className="font-bold text-primary-green">{formatUGX(item.price)}</p>
                 </div>
 
                 <div className="flex items-center space-x-4">
@@ -87,7 +89,7 @@ export default function Cart() {
             <div className="space-y-4 text-sm">
               <div className="flex justify-between text-zinc-500">
                 <span>Subtotal</span>
-                <span className="font-bold text-zinc-800">${getTotal().toFixed(2)}</span>
+                <span className="font-bold text-zinc-800">{formatUGX(getTotal())}</span>
               </div>
               <div className="flex justify-between text-zinc-500">
                 <span>Shipping</span>
@@ -95,7 +97,7 @@ export default function Cart() {
               </div>
               <div className="pt-4 border-t flex justify-between items-end">
                 <span className="font-bold text-lg">Total</span>
-                <span className="text-3xl font-bold text-primary-green">${getTotal().toFixed(2)}</span>
+                <span className="text-3xl font-bold text-primary-green">{formatUGX(getTotal())}</span>
               </div>
             </div>
 

@@ -2,6 +2,7 @@ import type { Product, User, Order, OrderItem } from '@shared/types';
 import { prisma } from '../config/database';
 //import { API_ENDPOINTS } from '@shared/constants';
 
+
 export class UserModel {
   constructor(private db: any) {}
 
@@ -131,4 +132,7 @@ export class OrderItemModel {
   async deleteByOrderId(orderId: number): Promise<void> {
     await prisma.orderItem.deleteMany({ where: { orderId } });
   }
+}
+export function formatPrice(amount: number): string {
+  return `UGX ${amount.toLocaleString('en-UG', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 }

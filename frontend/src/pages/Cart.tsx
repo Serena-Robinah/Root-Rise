@@ -47,7 +47,7 @@ export default function Cart() {
                 <div className="flex-grow space-y-1 text-center sm:text-left">
                   <h3 className="font-display font-bold text-xl text-primary-green">{item.name}</h3>
                   <p className="text-sm text-zinc-500">{item.category} • {item.age_group} Years</p>
-                  <p className="font-bold text-primary-green">${item.price.toFixed(2)}</p>
+                  <p className="font-bold text-primary-green">UGX {item.price.toLocaleString()}</p>
                 </div>
 
                 <div className="flex items-center space-x-4">
@@ -87,7 +87,7 @@ export default function Cart() {
             <div className="space-y-4 text-sm">
               <div className="flex justify-between text-zinc-500">
                 <span>Subtotal</span>
-                <span className="font-bold text-zinc-800">${getTotal().toFixed(2)}</span>
+                <span className="font-bold text-zinc-800">UGX {getTotal().toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-zinc-500">
                 <span>Shipping</span>
@@ -95,7 +95,7 @@ export default function Cart() {
               </div>
               <div className="pt-4 border-t flex justify-between items-end">
                 <span className="font-bold text-lg">Total</span>
-                <span className="text-3xl font-bold text-primary-green">${getTotal().toFixed(2)}</span>
+                <span className="text-3xl font-bold text-primary-green">UGX {getTotal().toLocaleString()}</span>
               </div>
             </div>
 

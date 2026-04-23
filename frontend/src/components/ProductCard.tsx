@@ -57,7 +57,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <Link to={`/product/${product.id}`} className="font-display font-bold text-lg text-primary-green hover:text-accent-orange transition-colors">
             {product.name}
           </Link>
-          <span className="font-bold text-primary-green">${product.price.toFixed(2)}</span>
+          <span className="font-bold text-primary-green">UGX {product.price.toLocaleString()}</span>
         </div>
         <p className="text-zinc-500 text-sm line-clamp-1">{product.description}</p>
         <div className="flex items-center space-x-2 pt-2">

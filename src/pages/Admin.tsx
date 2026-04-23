@@ -1,15 +1,14 @@
 import React from 'react';
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
-import { 
-  Package, 
-  ShoppingBag, 
-  Plus, 
-  LayoutDashboard, 
-  ChevronRight, 
-  TrendingUp, 
-  AlertTriangle, 
-  Users, 
-  DollarSign,
+import {
+  Package,
+  ShoppingBag,
+  Plus,
+  LayoutDashboard,
+  ChevronRight,
+  TrendingUp,
+  AlertTriangle,
+  Users,
   Search,
   Filter,
   Eye,
@@ -23,19 +22,19 @@ import {
   Phone,
   MapPin as MapPinIcon
 } from 'lucide-react';
-import { 
-  Card, 
-  CardContent, 
-  Typography, 
-  Grid, 
-  Box, 
-  Chip, 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableContainer, 
-  TableHead, 
-  TableRow, 
+import {
+  Card,
+  CardContent,
+  Typography,
+  Grid,
+  Box,
+  Chip,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Paper,
   IconButton,
   Button,
@@ -54,6 +53,8 @@ import { useAuthStore } from '../store/authStore';
 import { Product, Order } from '../types';
 import AdminLayout from '../components/AdminLayout';
 import { useSnackbar, SnackbarProvider } from 'notistack';
+
+const formatUGX = (amount: number) => `UGX ${amount.toLocaleString()}`;
 
 export default function Admin() {
   return (
@@ -99,11 +100,11 @@ function AdminDashboard() {
         </div>
         <div className="bg-white px-6 py-3 rounded-2xl shadow-sm border flex items-center space-x-3">
           <div className="w-10 h-10 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600">
-            <DollarSign className="w-6 h-6" />
+            <TrendingUp className="w-6 h-6" />
           </div>
           <div>
             <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Total Revenue</p>
-            <p className="text-xl font-bold text-primary-green">${stats.totalRevenue.toFixed(2)}</p>
+            <p className="text-xl font-bold text-primary-green">{formatUGX(stats.totalRevenue)}</p>
           </div>
         </div>
       </div>
@@ -145,14 +146,14 @@ function AdminDashboard() {
         <div className="bg-white p-8 rounded-3xl shadow-sm space-y-6">
           <h3 className="text-xl font-display font-bold text-primary-green">Inventory Status</h3>
           <div className="space-y-6">
-             <div className="flex items-center justify-between">
-               <span className="text-sm font-medium text-zinc-600">Stock Health</span>
-               <span className="text-sm font-bold text-emerald-600">Good</span>
-             </div>
-             <div className="w-full bg-zinc-100 h-2 rounded-full overflow-hidden">
-               <div className="bg-emerald-500 h-full w-[85%]" />
-             </div>
-             <p className="text-xs text-zinc-400">85% of your catalog is in healthy stock levels.</p>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-zinc-600">Stock Health</span>
+              <span className="text-sm font-bold text-emerald-600">Good</span>
+            </div>
+            <div className="w-full bg-zinc-100 h-2 rounded-full overflow-hidden">
+              <div className="bg-emerald-500 h-full w-[85%]" />
+            </div>
+            <p className="text-xs text-zinc-400">85% of your catalog is in healthy stock levels.</p>
           </div>
         </div>
       </div>
@@ -183,14 +184,14 @@ function AdminProducts() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
-    
+
     const url = editingProduct ? `/api/admin/products/${editingProduct.id}` : '/api/admin/products';
     const method = editingProduct ? 'PUT' : 'POST';
 
     try {
       const res = await fetch(url, {
         method,
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
@@ -242,7 +243,7 @@ function AdminProducts() {
           <h1 className="text-3xl font-display font-bold text-primary-green">Manage Products</h1>
           <p className="text-zinc-500">Add, edit, or remove products from your catalog.</p>
         </div>
-        <button 
+        <button
           onClick={() => { setEditingProduct(null); setIsModalOpen(true); }}
           className="btn-primary flex items-center space-x-2"
         >
@@ -267,9 +268,9 @@ function AdminProducts() {
               <TableRow key={product.id} className={`hover:bg-zinc-50/50 transition-colors ${product.stock < 5 ? 'bg-red-50/30' : ''}`}>
                 <TableCell>
                   <div className="flex items-center space-x-4">
-                    <Avatar 
-                      src={product.image_url} 
-                      variant="rounded" 
+                    <Avatar
+                      src={product.image_url}
+                      variant="rounded"
                       className="w-12 h-12 shadow-sm"
                     />
                     <div>
@@ -279,21 +280,20 @@ function AdminProducts() {
                   </div>
                 </TableCell>
                 <TableCell className="text-zinc-500 font-medium">{product.category}</TableCell>
-                <TableCell className="font-bold text-primary-green">${product.price.toFixed(2)}</TableCell>
+                <TableCell className="font-bold text-primary-green">{formatUGX(product.price)}</TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-2">
-                    <span className={`text-xs font-bold px-3 py-1 rounded-full ${
-                      product.stock < 5 
-                        ? 'bg-red-100 text-red-600' 
+                    <span className={`text-xs font-bold px-3 py-1 rounded-full ${product.stock < 5
+                        ? 'bg-red-100 text-red-600'
                         : 'bg-emerald-100 text-emerald-600'
-                    }`}>
+                      }`}>
                       {product.stock} in stock
                     </span>
                     {product.stock < 5 && (
-                      <Chip 
-                        label="Low Stock" 
-                        size="small" 
-                        color="error" 
+                      <Chip
+                        label="Low Stock"
+                        size="small"
+                        color="error"
                         className="font-bold text-[10px] uppercase"
                       />
                     )}
@@ -301,13 +301,13 @@ function AdminProducts() {
                 </TableCell>
                 <TableCell align="right">
                   <div className="flex justify-end space-x-2">
-                    <IconButton 
+                    <IconButton
                       onClick={() => { setEditingProduct(product); setIsModalOpen(true); }}
                       className="text-primary-green hover:bg-primary-green/10"
                     >
                       <Edit className="w-5 h-5" />
                     </IconButton>
-                    <IconButton 
+                    <IconButton
                       onClick={() => { setProductToDelete(product.id); setIsDeleteDialogOpen(true); }}
                       className="text-red-400 hover:bg-red-50"
                     >
@@ -322,8 +322,8 @@ function AdminProducts() {
       </TableContainer>
 
       {/* Add/Edit Modal */}
-      <Dialog 
-        open={isModalOpen} 
+      <Dialog
+        open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         maxWidth="sm"
         fullWidth
@@ -334,78 +334,77 @@ function AdminProducts() {
         </DialogTitle>
         <form onSubmit={handleSave}>
           <DialogContent className="space-y-6">
-            <TextField 
-              name="name" 
-              label="Product Name" 
-              fullWidth 
-              defaultValue={editingProduct?.name} 
-              required 
+            <TextField
+              name="name"
+              label="Product Name"
+              fullWidth
+              defaultValue={editingProduct?.name}
+              required
               variant="outlined"
               className="rounded-xl"
             />
-            <TextField 
-              name="description" 
-              label="Description" 
-              fullWidth 
-              multiline 
-              rows={3} 
-              defaultValue={editingProduct?.description} 
+            <TextField
+              name="description"
+              label="Description"
+              fullWidth
+              multiline
+              rows={3}
+              defaultValue={editingProduct?.description}
               variant="outlined"
             />
             <div className="grid grid-cols-2 gap-4">
-              <TextField 
-                name="price" 
-                label="Price ($)" 
-                type="number" 
-                fullWidth 
-                defaultValue={editingProduct?.price} 
-                required 
+              <TextField
+                name="price"
+                label="Price (UGX)"
+                type="number"
+                fullWidth
+                defaultValue={editingProduct?.price}
+                required
               />
-              <TextField 
-                name="stock" 
-                label="Stock Quantity" 
-                type="number" 
-                fullWidth 
-                defaultValue={editingProduct?.stock} 
-                required 
+              <TextField
+                name="stock"
+                label="Stock Quantity"
+                type="number"
+                fullWidth
+                defaultValue={editingProduct?.stock}
+                required
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
-               <FormControl fullWidth>
-                 <InputLabel>Category</InputLabel>
-                 <Select name="category" defaultValue={editingProduct?.category || 'Tops'} label="Category">
-                   <MenuItem value="Tops">Tops</MenuItem>
-                   <MenuItem value="Bottoms">Bottoms</MenuItem>
-                   <MenuItem value="Dresses">Dresses</MenuItem>
-                   <MenuItem value="Onesies">Onesies</MenuItem>
-                   <MenuItem value="Outerwear">Outerwear</MenuItem>
-                 </Select>
-               </FormControl>
-               <FormControl fullWidth>
-                 <InputLabel>Age Group</InputLabel>
-                 <Select name="age_group" defaultValue={editingProduct?.age_group || '0–1'} label="Age Group">
-                   <MenuItem value="0–1">0–1</MenuItem>
-                   <MenuItem value="2–4">2–4</MenuItem>
-                   <MenuItem value="5–7">5–7</MenuItem>
-                   <MenuItem value="8–10">8–10</MenuItem>
-                   <MenuItem value="11–14">11–14</MenuItem>
-                 </Select>
-               </FormControl>
+              <FormControl fullWidth>
+                <InputLabel>Category</InputLabel>
+                <Select name="category" defaultValue={editingProduct?.category || 'Tops'} label="Category">
+                  <MenuItem value="Tops">Tops</MenuItem>
+                  <MenuItem value="Bottoms">Bottoms</MenuItem>
+                  <MenuItem value="Dresses">Dresses</MenuItem>
+                  <MenuItem value="Onesies">Onesies</MenuItem>
+                  <MenuItem value="Outerwear">Outerwear</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl fullWidth>
+                <InputLabel>Age Group</InputLabel>
+                <Select name="age_group" defaultValue={editingProduct?.age_group || '0–1'} label="Age Group">
+                  <MenuItem value="0–1">0–1</MenuItem>
+                  <MenuItem value="2–4">2–4</MenuItem>
+                  <MenuItem value="5–7">5–7</MenuItem>
+                  <MenuItem value="8–10">8–10</MenuItem>
+                  <MenuItem value="11–14">11–14</MenuItem>
+                </Select>
+              </FormControl>
             </div>
             <FormControl fullWidth>
-               <InputLabel>Gender</InputLabel>
-               <Select name="gender" defaultValue={editingProduct?.gender || 'Unisex'} label="Gender">
-                 <MenuItem value="Boys">Boys</MenuItem>
-                 <MenuItem value="Girls">Girls</MenuItem>
-                 <MenuItem value="Unisex">Unisex</MenuItem>
-               </Select>
+              <InputLabel>Gender</InputLabel>
+              <Select name="gender" defaultValue={editingProduct?.gender || 'Unisex'} label="Gender">
+                <MenuItem value="Boys">Boys</MenuItem>
+                <MenuItem value="Girls">Girls</MenuItem>
+                <MenuItem value="Unisex">Unisex</MenuItem>
+              </Select>
             </FormControl>
-            <TextField 
-              name="image_url" 
-              label="Image URL" 
-              fullWidth 
-              defaultValue={editingProduct?.image_url} 
-              required 
+            <TextField
+              name="image_url"
+              label="Image URL"
+              fullWidth
+              defaultValue={editingProduct?.image_url}
             />
           </DialogContent>
           <DialogActions className="p-6">
@@ -454,7 +453,7 @@ function AdminOrders() {
     try {
       const res = await fetch(`/api/admin/orders/${id}/status`, {
         method: 'PATCH',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
@@ -492,8 +491,8 @@ function AdminOrders() {
     }
   };
 
-  const filteredOrders = statusFilter === 'All' 
-    ? orders 
+  const filteredOrders = statusFilter === 'All'
+    ? orders
     : orders.filter(o => o.status === statusFilter);
 
   return (
@@ -506,8 +505,8 @@ function AdminOrders() {
         <div className="flex items-center space-x-4">
           <FormControl size="small" className="w-48">
             <InputLabel>Filter Status</InputLabel>
-            <Select 
-              value={statusFilter} 
+            <Select
+              value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               label="Filter Status"
               className="rounded-xl bg-white"
@@ -545,10 +544,10 @@ function AdminOrders() {
                     <p className="text-xs text-zinc-400">{order.phone}</p>
                   </div>
                 </TableCell>
-                <TableCell className="font-bold text-primary-green">${order.total_amount.toFixed(2)}</TableCell>
+                <TableCell className="font-bold text-primary-green">{formatUGX(order.total_amount)}</TableCell>
                 <TableCell>
-                  <Chip 
-                    label={order.status} 
+                  <Chip
+                    label={order.status}
                     color={getStatusColor(order.status) as any}
                     size="small"
                     className="font-bold uppercase text-[10px] tracking-wider"
@@ -563,7 +562,7 @@ function AdminOrders() {
                       <Eye className="w-5 h-5" />
                     </IconButton>
                     <FormControl size="small" className="w-32">
-                      <Select 
+                      <Select
                         value={order.status}
                         onChange={(e) => updateStatus(order.id, e.target.value)}
                         className="text-xs font-bold rounded-lg h-8"
@@ -584,8 +583,8 @@ function AdminOrders() {
       </TableContainer>
 
       {/* Order Details Modal */}
-      <Dialog 
-        open={isDetailsOpen} 
+      <Dialog
+        open={isDetailsOpen}
         onClose={() => setIsDetailsOpen(false)}
         maxWidth="md"
         fullWidth
@@ -598,8 +597,8 @@ function AdminOrders() {
                 <h2 className="text-2xl font-display font-bold text-primary-green">Order #ORD-{selectedOrder.id}</h2>
                 <p className="text-sm text-zinc-400">{new Date(selectedOrder.created_at).toLocaleString()}</p>
               </div>
-              <Chip 
-                label={selectedOrder.status} 
+              <Chip
+                label={selectedOrder.status}
                 color={getStatusColor(selectedOrder.status) as any}
                 className="font-bold uppercase"
               />
@@ -628,7 +627,7 @@ function AdminOrders() {
                   <div className="bg-soft-cream p-6 rounded-2xl space-y-3">
                     <div className="flex justify-between">
                       <span className="text-zinc-600">Items Total</span>
-                      <span className="font-bold">${selectedOrder.total_amount.toFixed(2)}</span>
+                      <span className="font-bold">{formatUGX(selectedOrder.total_amount)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-zinc-600">Shipping</span>
@@ -636,7 +635,7 @@ function AdminOrders() {
                     </div>
                     <div className="pt-3 border-t border-primary-green/10 flex justify-between items-end">
                       <span className="font-bold text-primary-green">Grand Total</span>
-                      <span className="text-2xl font-bold text-primary-green">${selectedOrder.total_amount.toFixed(2)}</span>
+                      <span className="text-2xl font-bold text-primary-green">{formatUGX(selectedOrder.total_amount)}</span>
                     </div>
                   </div>
                 </div>
@@ -651,10 +650,10 @@ function AdminOrders() {
                         <img src={item.image_url} alt="" className="w-12 h-12 rounded-xl object-cover" />
                         <div>
                           <p className="font-bold text-primary-green">{item.product_name}</p>
-                          <p className="text-xs text-zinc-400">Qty: {item.quantity} × ${item.price.toFixed(2)}</p>
+                          <p className="text-xs text-zinc-400">Qty: {item.quantity} × {formatUGX(item.price)}</p>
                         </div>
                       </div>
-                      <p className="font-bold text-primary-green">${(item.quantity * item.price).toFixed(2)}</p>
+                      <p className="font-bold text-primary-green">{formatUGX(item.quantity * item.price)}</p>
                     </div>
                   ))}
                 </div>
@@ -664,7 +663,7 @@ function AdminOrders() {
               <Button onClick={() => setIsDetailsOpen(false)} className="text-zinc-500 font-bold">Close</Button>
               <div className="flex space-x-2">
                 {selectedOrder.status === 'Pending' && (
-                  <Button 
+                  <Button
                     onClick={() => updateStatus(selectedOrder.id, 'Confirmed')}
                     className="btn-primary"
                   >
@@ -672,7 +671,7 @@ function AdminOrders() {
                   </Button>
                 )}
                 {selectedOrder.status === 'Confirmed' && (
-                  <Button 
+                  <Button
                     onClick={() => updateStatus(selectedOrder.id, 'Out for Delivery')}
                     className="btn-accent"
                   >
@@ -687,5 +686,3 @@ function AdminOrders() {
     </div>
   );
 }
-
-

@@ -77,7 +77,7 @@ export default function ProductDetails() {
               <span className="text-xs text-zinc-400 font-medium">(48 Reviews)</span>
             </div>
             <h1 className="text-5xl font-display font-bold">{product.name}</h1>
-            <p className="text-3xl font-bold text-primary-green">${product.price.toFixed(2)}</p>
+            <p className="text-3xl font-bold text-primary-green">UGX {product.price.toLocaleString()}</p>
           </div>
 
           <div className="space-y-4">
