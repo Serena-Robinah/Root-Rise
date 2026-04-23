@@ -1,5 +1,5 @@
 import { apiClient } from './apiClient';
-import type { Order, OrderStatus } from '@shared/types';
+import type { Order, OrderItem, OrderStatus } from '@shared/types';
 import { API_ENDPOINTS } from '@shared/constants';
 import { authService } from './auth';
 
@@ -19,9 +19,9 @@ export class OrderServiceClient {
     return apiClient.get<Order[]>(API_ENDPOINTS.ADMIN_ORDERS, token || undefined);
   }
 
-  getById(id: number): Promise<Order & { items: any[] }> {
+  getById(id: number): Promise<Order & { items: OrderItem[] }> {
     const token = authService.getToken();
-    return apiClient.get<Order & { items: any[] }>(API_ENDPOINTS.ADMIN_ORDER_DETAIL(id), token || undefined);
+    return apiClient.get<Order & { items: OrderItem[] }>(API_ENDPOINTS.ADMIN_ORDER_DETAIL(id), token || undefined);
   }
 
   updateStatus(id: number, status: OrderStatus): Promise<{ success: boolean }> {
@@ -34,9 +34,19 @@ export class OrderServiceClient {
     return apiClient.delete<{ success: boolean }>(API_ENDPOINTS.ADMIN_DELETE_ORDER(id), token || undefined);
   }
 
-  getStats(): Promise<any> {
+  getStats(): Promise<{
+    totalOrders: number;
+    totalRevenue: number;
+    pendingOrders: number;
+    totalProducts: number;
+  }> {
     const token = authService.getToken();
-    return apiClient.get<any>('/api/admin/stats', token || undefined);
+    return apiClient.get<{
+      totalOrders: number;
+      totalRevenue: number;
+      pendingOrders: number;
+      totalProducts: number;
+    }>('/api/admin/stats', token || undefined);
   }
 }
 

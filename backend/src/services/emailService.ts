@@ -108,3 +108,39 @@ export async function sendOrderStatusUpdate(to: string, data: {
     `,
   });
 }
+
+export async function sendVerificationEmail(to: string, data: {
+  name: string;
+  token: string;
+  baseUrl: string;
+}) {
+  const verificationLink = `${data.baseUrl}/api/auth/verify-email?token=${data.token}`;
+
+  await transporter.sendMail({
+    from: `"Root & Rise Kids" <${process.env.EMAIL_USER}>`,
+    to,
+    subject: `Verify your email — Root & Rise Kids`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+        <div style="background-color: #2d6a4f; padding: 32px; text-align: center;">
+          <h1 style="color: white; margin: 0; font-size: 28px;">Root & Rise Kids</h1>
+        </div>
+        <div style="padding: 32px;">
+          <h2 style="color: #2d6a4f;">Verify your email 📧</h2>
+          <p>Hi ${data.name},</p>
+          <p>Thank you for signing up! Please verify your email address to start shopping.</p>
+          <div style="text-align: center; margin: 32px 0;">
+            <a href="${verificationLink}" style="background-color: #f4845f; color: white; padding: 16px 32px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 16px;">
+              Verify Email
+            </a>
+          </div>
+          <p style="color: #666;">If you didn't create an account, you can ignore this email.</p>
+          <p style="color: #666;">Thank you for choosing Root & Rise Kids 💚</p>
+        </div>
+        <div style="background: #f5f5f5; padding: 16px; text-align: center; font-size: 12px; color: #999;">
+          © 2024 Root & Rise Kids. All rights reserved.
+        </div>
+      </div>
+    `,
+  });
+}

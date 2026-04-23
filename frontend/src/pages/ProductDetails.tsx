@@ -5,6 +5,7 @@ import { productService } from '../services';
 import { useCartStore } from '../store/cartStore';
 import { motion } from 'motion/react';
 import type { Product } from '@shared/types';
+import { useAuthStore } from '@/store/authStore';
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -12,6 +13,7 @@ export default function ProductDetails() {
   const [product, setProduct] = React.useState<Product | null>(null);
   const [loading, setLoading] = React.useState(true);
   const { addItem } = useCartStore();
+  const { user } = useAuthStore();
 
   React.useEffect(() => {
     productService.getById(Number(id))
@@ -105,10 +107,14 @@ export default function ProductDetails() {
             </div>
 
             <button 
-              onClick={() => addItem(product)}
-              disabled={product.stock === 0}
-              className="w-full btn-accent py-5 text-xl flex items-center justify-center space-x-3 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+  onClick={() => {
+    if (!user) return;
+    if (!user.email_verified) { alert('Please verify your email before adding to cart.'); return; }
+    addItem(product);
+  }}
+  disabled={product.stock === 0}
+  className="w-full btn-accent py-5 text-xl flex items-center justify-center space-x-3 disabled:opacity-50 disabled:cursor-not-allowed"
+>
               <ShoppingCart className="w-6 h-6" />
               <span>Add to Cart</span>
             </button>

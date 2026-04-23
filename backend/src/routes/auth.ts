@@ -7,6 +7,7 @@ export function createAuthRoutes(_db?: any) {
 
   router.post('/signup', (req, res) => authController.signup(req, res));
   router.post('/login', (req, res) => authController.login(req, res));
+  router.get('/verify-email', (req, res) => authController.verifyEmail(req, res));
 
   return router;
 }

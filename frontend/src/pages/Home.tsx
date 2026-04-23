@@ -5,11 +5,15 @@ import { motion } from 'motion/react';
 import ProductCard from '../components/ProductCard';
 import { productService } from '../services';
 import type { Product } from '@shared/types';
+import { useAuthStore } from '@/store/authStore';
 
 export default function Home() {
   const [featuredProducts, setFeaturedProducts] = React.useState<Product[]>([]);
   const [email, setEmail] = React.useState('');
   const [subscribed, setSubscribed] = React.useState(false);
+  const { user } = useAuthStore();
+const searchParams = new URLSearchParams(window.location.search);
+const justVerified = searchParams.get('verified') === 'true';
 
   React.useEffect(() => {
     productService.getAll()
@@ -27,6 +31,11 @@ export default function Home() {
 
   return (
     <div className="space-y-24 pb-24">
+      {justVerified && (
+  <div className="bg-emerald-50 text-emerald-700 text-center py-4 font-bold">
+    ✅ Your email has been verified! You can now shop freely.
+  </div>
+)}
       {/* Hero Section */}
       <section className="relative h-[80vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">

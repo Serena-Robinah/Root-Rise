@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Eye } from 'lucide-react';
 import type { Product } from '@shared/types';
 import { useCartStore } from '../store/cartStore';
+import { useAuthStore } from '../store/authStore';
 import { motion } from 'motion/react';
+import AuthModal from './AuthModal';
 
 interface ProductCardProps {
   product: Product;
@@ -11,6 +13,8 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const { addItem } = useCartStore();
+  const { user } = useAuthStore();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   return (
     <motion.div
@@ -34,7 +38,11 @@ export default function ProductCard({ product }: ProductCardProps) {
             <Eye className="w-6 h-6" />
           </Link>
           <button
-            onClick={() => addItem(product)}
+            onClick={() => {
+              if (!user) { setIsAuthModalOpen(true); return; }
+              if (!user.email_verified) { alert('Please verify your email before adding to cart.'); return; }
+              addItem(product);
+            }}
             className="w-12 h-12 bg-accent-orange rounded-full flex items-center justify-center text-white hover:scale-110 transition-all shadow-lg"
           >
             <ShoppingCart className="w-6 h-6" />
@@ -65,6 +73,8 @@ export default function ProductCard({ product }: ProductCardProps) {
           <span className="text-[10px] font-bold bg-soft-cream text-primary-green px-2 py-0.5 rounded uppercase">{product.gender}</span>
         </div>
       </div>
+
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </motion.div>
   );
 }

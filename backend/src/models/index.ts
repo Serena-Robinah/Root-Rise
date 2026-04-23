@@ -14,10 +14,10 @@ export class UserModel {
     return prisma.user.findUnique({ where: { id } }) as Promise<User | null>;
   }
 
-  async create(name: string, email: string, passwordHash: string, role: string = 'customer'): Promise<number> {
-    const u = await prisma.user.create({ data: { name, email, password_hash: passwordHash, role } });
-    return u.id;
-  }
+  async create(name: string, email: string, passwordHash: string, role: string = 'customer', verificationToken?: string): Promise<number> {
+  const u = await prisma.user.create({ data: { name, email, password_hash: passwordHash, role, verification_token: verificationToken } as any });
+  return u.id;
+}
 
   async countByRole(role: string): Promise<number> {
     return prisma.user.count({ where: { role } });

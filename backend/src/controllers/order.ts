@@ -1,10 +1,11 @@
 import { OrderService } from '../services';
-import type { Response } from 'express';
+import type { Request, Response } from 'express';
+import type { OrderStatus } from '../../../shared/types';
 
 export class OrderController {
   constructor(private db?: any) { }
 
-  async getAll(req, res) {
+  async getAll(req: Request, res: Response): Promise<void> {
     try {
       const orderService = new OrderService(this.db);
       const orders = await orderService.getAllOrders();
@@ -14,7 +15,7 @@ export class OrderController {
     }
   }
 
-  async getById(req, res) {
+  async getById(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
       const orderService = new OrderService(this.db);
@@ -31,7 +32,7 @@ export class OrderController {
     }
   }
 
-  async create(req, res) {
+  async create(req: Request, res: Response): Promise<void> {
     try {
       const { userId, items, totalAmount, shippingInfo } = req.body;
 
@@ -65,7 +66,7 @@ export class OrderController {
     }
   }
 
-  async updateStatus(req, res) {
+  async updateStatus(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
       const { status } = req.body;
@@ -78,7 +79,7 @@ export class OrderController {
       }
 
       const orderService = new OrderService(this.db);
-      await orderService.updateOrderStatus(Number(id), status as any);
+      await orderService.updateOrderStatus(Number(id), status as OrderStatus);
 
       // Send status update email
       try {
@@ -101,7 +102,7 @@ export class OrderController {
     }
   }
 
-  async delete(req, res) {
+  async delete(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
       const orderService = new OrderService(this.db);
@@ -112,7 +113,7 @@ export class OrderController {
     }
   }
 
-  async getStats(req: any, res: Response): Promise<void> {
+  async getStats(req: Request, res: Response): Promise<void> {
     try {
       const orderService = new OrderService(this.db);
       const stats = await orderService.getStats();

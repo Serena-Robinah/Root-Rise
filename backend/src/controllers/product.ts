@@ -1,9 +1,10 @@
 import { ProductService } from '../services';
+import type { Request, Response } from 'express';
 
 export class ProductController {
   constructor(private db?: any) { }
 
-  async getAll(req: any, res: any, next: any) {
+  async getAll(req: Request, res: Response): Promise<void> {
     try {
       const productService = new ProductService(this.db);
       const products = await productService.getAllProducts();
@@ -14,7 +15,7 @@ export class ProductController {
     }
   }
 
-  async getById(req: any, res: any, next: any) {
+  async getById(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
       const productService = new ProductService(this.db);
@@ -31,7 +32,7 @@ export class ProductController {
     }
   }
 
-  async create(req: any, res: any, next: any) {
+  async create(req: Request & { file?: Express.Multer.File }, res: Response): Promise<void> {
     try {
       const { name, description, category, age_group, gender } = req.body;
       const price = parseFloat(req.body.price);
@@ -66,7 +67,7 @@ export class ProductController {
     }
   }
 
-  async update(req: any, res: any, next: any) {
+  async update(req: Request & { file?: Express.Multer.File }, res: Response): Promise<void> {
     try {
       const { id } = req.params;
       const { name, description, category, age_group, gender } = req.body;
@@ -96,7 +97,7 @@ export class ProductController {
     }
   }
 
-  async delete(req: any, res: any, next: any) {
+  async delete(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
       const productService = new ProductService(this.db);
