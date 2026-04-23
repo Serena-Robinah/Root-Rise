@@ -51,7 +51,7 @@ export default function Checkout() {
           userId: user.id,
           items,
           totalAmount: getTotal(),
-          shippingInfo: data,
+          shippingInfo: { ...data, email: user.email },
         }),
       });
 

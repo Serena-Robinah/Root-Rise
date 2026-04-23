@@ -2,7 +2,7 @@ import { OrderService } from '../services';
 import type { Response } from 'express';
 
 export class OrderController {
-  constructor(private db?: any) {}
+  constructor(private db?: any) { }
 
   async getAll(req, res) {
     try {
@@ -43,6 +43,22 @@ export class OrderController {
       const orderService = new OrderService(this.db);
       const orderId = await orderService.createOrder(userId, items, totalAmount, shippingInfo);
 
+      // Send confirmation email
+      try {
+        const { sendOrderConfirmation } = await import('../services/emailService');
+        const order = await orderService.getOrderById(orderId);
+        if (order && shippingInfo.email) {
+          await sendOrderConfirmation(shippingInfo.email, {
+            id: orderId,
+            full_name: shippingInfo.fullName,
+            total_amount: totalAmount,
+            items: order.items,
+          });
+        }
+      } catch (emailErr) {
+        console.error('[Email] Failed to send confirmation:', emailErr);
+      }
+
       res.json({ success: true, orderId });
     } catch (error: any) {
       res.status(500).json({ error: error.message || 'Failed to create order' });
@@ -54,13 +70,7 @@ export class OrderController {
       const { id } = req.params;
       const { status } = req.body;
 
-      const validStatuses = [
-        'Pending',
-        'Confirmed',
-        'Out for Delivery',
-        'Delivered',
-        'Cancelled',
-      ];
+      const validStatuses = ['Pending', 'Confirmed', 'Out for Delivery', 'Delivered', 'Cancelled'];
 
       if (!validStatuses.includes(status)) {
         res.status(400).json({ error: 'Invalid status' });
@@ -69,6 +79,21 @@ export class OrderController {
 
       const orderService = new OrderService(this.db);
       await orderService.updateOrderStatus(Number(id), status as any);
+
+      // Send status update email
+      try {
+        const { sendOrderStatusUpdate } = await import('../services/emailService');
+        const order = await orderService.getOrderById(Number(id));
+        if (order && (order as any).user?.email) {
+          await sendOrderStatusUpdate((order as any).user.email, {
+            full_name: order.full_name || 'Customer',
+            order_id: Number(id),
+            status,
+          });
+        }
+      } catch (emailErr) {
+        console.error('[Email] Failed to send status update:', emailErr);
+      }
 
       res.json({ success: true });
     } catch (error) {
@@ -106,4 +131,3 @@ export class OrderController {
     }
   }
 }
-

@@ -69,10 +69,13 @@ export class OrderModel {
   }
 
   async findById(id: number): Promise<Order | null> {
-    const o: any = await prisma.order.findUnique({ where: { id } });
-    if (!o) return null;
-    return { ...o, user_id: o.userId } as unknown as Order;
-  }
+  const o: any = await prisma.order.findUnique({ 
+    where: { id },
+    include: { user: true }
+  });
+  if (!o) return null;
+  return { ...o, user_id: o.userId } as unknown as Order;
+}
 
   async create(
     userId: number | null,
