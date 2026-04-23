@@ -38,7 +38,7 @@ export const API_ENDPOINTS = {
   CREATE_ORDER: '/api/orders',
 
   // Admin
-  ADMIN_STATS: '/api/admin/stats',
+  ADMIN_STATS: '/api/admin/orders/stats',
   ADMIN_ORDERS: '/api/admin/orders',
   ADMIN_ORDER_DETAIL: (id: number) => `/api/admin/orders/${id}`,
   ADMIN_ORDER_STATUS: (id: number) => `/api/admin/orders/${id}/status`,

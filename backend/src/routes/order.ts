@@ -14,6 +14,7 @@ export function createAdminOrderRoutes(_db?: any) {
   const router = Router();
   const orderController = new OrderController();
 
+  router.get('/stats', (req, res) => orderController.getStats(req, res));
   router.get('/', (req, res) => orderController.getAll(req, res));
   router.get('/:id', (req, res) => orderController.getById(req, res));
   router.patch('/:id/status', (req, res) => orderController.updateStatus(req, res));

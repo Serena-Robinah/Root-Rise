@@ -9,7 +9,7 @@ export declare const API_ENDPOINTS: {
     readonly PRODUCTS: "/api/products";
     readonly PRODUCT_DETAIL: (id: number) => string;
     readonly CREATE_ORDER: "/api/orders";
-    readonly ADMIN_STATS: "/api/admin/stats";
+    readonly ADMIN_STATS: "/api/admin/orders/stats";
     readonly ADMIN_ORDERS: "/api/admin/orders";
     readonly ADMIN_ORDER_DETAIL: (id: number) => string;
     readonly ADMIN_ORDER_STATUS: (id: number) => string;

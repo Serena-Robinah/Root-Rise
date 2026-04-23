@@ -5,8 +5,9 @@ import { API_ENDPOINTS } from '@shared/constants';
 
 export const adminService = {
   async getStats() {
-    return await apiClient.get<any>(API_ENDPOINTS.ADMIN_STATS, useAuthStore.getState().token || undefined);
-  },
+  console.log('[Stats URL]', API_ENDPOINTS.ADMIN_STATS);
+  return await apiClient.get<any>(API_ENDPOINTS.ADMIN_STATS, useAuthStore.getState().token || undefined);
+},
 
   async getProducts() {
     return await apiClient.get<Product[]>(API_ENDPOINTS.PRODUCTS);
