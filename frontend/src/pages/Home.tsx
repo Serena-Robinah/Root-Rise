@@ -8,6 +8,8 @@ import type { Product } from '@shared/types';
 
 export default function Home() {
   const [featuredProducts, setFeaturedProducts] = React.useState<Product[]>([]);
+  const [email, setEmail] = React.useState('');
+  const [subscribed, setSubscribed] = React.useState(false);
 
   React.useEffect(() => {
     productService.getAll()
@@ -160,15 +162,21 @@ export default function Home() {
           <div className="absolute inset-0 bg-primary-green/60" />
           <div className="relative z-10 p-12 md:p-24 space-y-8 text-white max-w-2xl">
             <h2 className="text-4xl md:text-5xl font-display font-bold">Join our community of happy parents</h2>
-            <p className="text-lg text-soft-cream/90">Sign up for our newsletter and get 10% off your first order!</p>
-            <div className="flex gap-4">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-grow px-6 py-4 rounded-xl bg-white/10 border border-white/20 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-accent-orange"
-              />
-              <button className="btn-accent px-8">Subscribe</button>
-            </div>
+            <p className="text-lg text-soft-cream/90">Sign up and make your first order!</p>
+            {subscribed ? (
+              <p className="text-accent-orange font-bold text-lg">🎉 Thank you for subscribing!</p>
+            ) : (
+              <div className="flex gap-4">
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="flex-grow px-6 py-4 rounded-xl bg-white/10 border border-white/20 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-accent-orange"
+                />
+                <button onClick={() => email && setSubscribed(true)} className="btn-accent px-8">Subscribe</button>
+              </div>
+            )}
           </div>
         </div>
       </section>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react';
 
+import { Mail, Phone, MapPin } from 'lucide-react';
 export default function Footer() {
   return (
     <footer className="bg-primary-green text-white pt-16 pb-8">
@@ -18,10 +18,10 @@ export default function Footer() {
               Adorable & affordable finds for your little ones. We believe in natural, safe, and playful clothing for every child.
             </p>
             <div className="flex space-x-4 pt-2">
-              <a href="#" className="hover:text-accent-orange transition-colors"><Instagram className="w-5 h-5" /></a>
-              <a href="#" className="hover:text-accent-orange transition-colors"><Facebook className="w-5 h-5" /></a>
-              <a href="#" className="hover:text-accent-orange transition-colors"><Twitter className="w-5 h-5" /></a>
-            </div>
+  <a href="https://www.instagram.com/rootandrisehub_ug" target="_blank" rel="noopener noreferrer" className="text-xs font-bold hover:text-accent-orange transition-colors uppercase tracking-wider">Instagram</a>
+  <a href="https://www.tiktok.com/@rootandrisehub" target="_blank" rel="noopener noreferrer" className="text-xs font-bold hover:text-accent-orange transition-colors uppercase tracking-wider">TikTok</a>
+  <a href="https://www.snapchat.com/add/Rootandrisehub" target="_blank" rel="noopener noreferrer" className="text-xs font-bold hover:text-accent-orange transition-colors uppercase tracking-wider">Snapchat</a>
+</div>
           </div>
 
           <div>
@@ -29,8 +29,8 @@ export default function Footer() {
             <ul className="space-y-3 text-sm text-soft-cream/80">
               <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
               <li><Link to="/shop" className="hover:text-white transition-colors">Shop All</Link></li>
-              <li><Link to="/shop?category=Newborn" className="hover:text-white transition-colors">Newborn</Link></li>
-              <li><Link to="/shop?category=Toddler" className="hover:text-white transition-colors">Toddler</Link></li>
+              <li><Link to="/shop?age=0–1" className="hover:text-white transition-colors">Newborn</Link></li>
+              <li><Link to="/shop?age=2–4" className="hover:text-white transition-colors">Toddler</Link></li>
             </ul>
           </div>
 
@@ -49,15 +49,15 @@ export default function Footer() {
             <ul className="space-y-4 text-sm text-soft-cream/80">
               <li className="flex items-start space-x-3">
                 <MapPin className="w-5 h-5 text-accent-orange shrink-0" />
-                <span>123 Playful Lane, Kids City, KC 56789</span>
+                <span>contact us for more details</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-accent-orange shrink-0" />
-                <span>+1 (555) 123-4567</span>
+                <span>+256 771 670 101</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-accent-orange shrink-0" />
-                <span>hello@rootandrise.com</span>
+                <span>rootsandrisehub@gmail.com</span>
               </li>
             </ul>
           </div>
