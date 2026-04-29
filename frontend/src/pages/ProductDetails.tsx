@@ -1,30 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ShoppingCart, ArrowLeft, ShieldCheck, Truck, RefreshCcw, Star } from 'lucide-react';
-import { productService } from '../services';
+import { Product } from '../types';
 import { useCartStore } from '../store/cartStore';
+import { useAuthStore } from '../store/authStore';
 import { motion } from 'motion/react';
-import type { Product } from '@shared/types';
-import { useAuthStore } from '@/store/authStore';
+import AuthModal from '../components/AuthModal';
+
+const formatUGX = (amount: number) => `UGX ${amount.toLocaleString()}`;
 
 export default function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = React.useState<Product | null>(null);
   const [loading, setLoading] = React.useState(true);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { addItem } = useCartStore();
   const { user } = useAuthStore();
 
   React.useEffect(() => {
-    productService.getById(Number(id))
+    fetch(`/api/products/${id}`)
+      .then(res => res.json())
       .then(data => {
         setProduct(data);
         setLoading(false);
       })
-      .catch(err => {
-        console.error('Failed to fetch product:', err);
-        setLoading(false);
-      });
+      .catch(() => setLoading(false));
   }, [id]);
 
   if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
@@ -32,7 +33,7 @@ export default function ProductDetails() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
-      <button 
+      <button
         onClick={() => navigate(-1)}
         className="flex items-center space-x-2 text-zinc-500 hover:text-primary-green font-bold transition-colors"
       >
@@ -41,16 +42,15 @@ export default function ProductDetails() {
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
-        {/* Image Gallery */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           className="space-y-4"
         >
           <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-xl">
-            <img 
-              src={product.image_url} 
-              alt={product.name} 
+            <img
+              src={product.image_url}
+              alt={product.name}
               className="w-full h-full object-cover"
               referrerPolicy="no-referrer"
             />
@@ -64,8 +64,7 @@ export default function ProductDetails() {
           </div>
         </motion.div>
 
-        {/* Product Info */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           className="space-y-8"
@@ -79,7 +78,7 @@ export default function ProductDetails() {
               <span className="text-xs text-zinc-400 font-medium">(48 Reviews)</span>
             </div>
             <h1 className="text-5xl font-display font-bold">{product.name}</h1>
-            <p className="text-3xl font-bold text-primary-green">UGX {product.price.toLocaleString()}</p>
+            <p className="text-3xl font-bold text-primary-green">{formatUGX(product.price)}</p>
           </div>
 
           <div className="space-y-4">
@@ -106,21 +105,20 @@ export default function ProductDetails() {
               </div>
             </div>
 
-            <button 
-  onClick={() => {
-    if (!user) return;
-    if (!user.email_verified) { alert('Please verify your email before adding to cart.'); return; }
-    addItem(product);
-  }}
-  disabled={product.stock === 0}
-  className="w-full btn-accent py-5 text-xl flex items-center justify-center space-x-3 disabled:opacity-50 disabled:cursor-not-allowed"
->
+            <button
+              onClick={() => {
+                if (!user) { setIsAuthModalOpen(true); return; }
+                if (!user.email_verified) { alert('Please verify your email before adding to cart.'); return; }
+                addItem(product);
+              }}
+              disabled={product.stock === 0}
+              className="w-full btn-accent py-5 text-xl flex items-center justify-center space-x-3 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <ShoppingCart className="w-6 h-6" />
               <span>Add to Cart</span>
             </button>
           </div>
 
-          {/* Trust Badges */}
           <div className="grid grid-cols-3 gap-4 pt-8">
             <div className="text-center space-y-2">
               <ShieldCheck className="w-8 h-8 text-primary-green mx-auto" />
@@ -137,6 +135,8 @@ export default function ProductDetails() {
           </div>
         </motion.div>
       </div>
+
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </div>
   );
 }
