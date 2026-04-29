@@ -5,12 +5,12 @@ import { JWT_SECRET } from '../config/env';
 import { AuthService } from '../services';
 
 export class AuthController {
-  constructor(private db?: any) {}
+  constructor(private db?: any) { }
 
   async signup(req: Request, res: Response): Promise<void> {
     try {
       const { name, email, password } = req.body;
-      
+
       if (!name || !email || !password) {
         res.status(400).json({ error: 'Missing required fields' });
         return;
@@ -18,6 +18,7 @@ export class AuthController {
 
       // Generate verification token
       const verificationToken = crypto.randomBytes(32).toString('hex');
+      console.log('[Signup] Token generated:', verificationToken);
 
       const authService = new AuthService(this.db);
       const user = await authService.signup(name, email, password, verificationToken);
