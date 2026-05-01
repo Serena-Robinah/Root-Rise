@@ -2,7 +2,9 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "ESNext",
-    "lib": ["ES2020"],
+    "lib": [
+      "ES2020"
+    ],
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -16,11 +18,22 @@
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@shared/types": ["../shared/types/index.ts"],
-      "@shared/constants": ["../shared/constants/index.ts"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@shared/types": [
+        "./src/shared/types/index.ts"
+      ],
+      "@shared/constants": [
+        "./src/shared/constants/index.ts"
+      ]
     }
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
