@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: root-rise-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npx prisma migrate deploy && node dist/server.js
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false          # Set this manually in Render dashboard
+      - key: JWT_SECRET
+        sync: false          # Set this manually in Render dashboard
+      - key: FRONTEND_URL
+        sync: false          # Set to your Vercel URL, e.g. https://root-rise.vercel.app
+      - key: EMAIL_USER
+        sync: false          # Optional: Gmail address for order emails
+      - key: EMAIL_PASS
+        sync: false          # Optional: Gmail app password
+      - key: ADMIN_EMAIL
+        sync: false          # Optional: override default admin email
+      - key: ADMIN_PASSWORD
+        sync: false          # Optional: override default admin password

@@ -1,4 +1,5 @@
 import { prisma } from '../config/database';
+import { Prisma } from '@prisma/client';
 import { OrderModel, OrderItemModel, ProductModel } from '../models';
 import type { Order, OrderStatus } from '@shared/types';
 
@@ -37,7 +38,7 @@ export class OrderService {
     totalAmount: number,
     shippingInfo: { fullName: string; phone: string; address: string }
   ): Promise<number> {
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const o = await tx.order.create({ data: { userId, total_amount: totalAmount, full_name: shippingInfo.fullName, phone: shippingInfo.phone, address: shippingInfo.address } as any });
       for (const item of items) {
         await tx.orderItem.create({ data: { orderId: o.id, productId: item.id, quantity: item.quantity, price: item.price } });
