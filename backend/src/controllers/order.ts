@@ -1,6 +1,6 @@
 import { OrderService } from '../services';
 import type { Request, Response } from 'express';
-import type { OrderStatus } from '../../../shared/types';
+import type { OrderStatus } from '@shared/types';
 
 export class OrderController {
   constructor(private db?: any) { }

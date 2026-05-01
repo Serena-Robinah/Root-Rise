@@ -14,8 +14,6 @@ export interface User {
     name: string;
     email: string;
     role: 'customer' | 'admin';
-    email_verified?: boolean;
-    verification_token?: string;
 }
 export interface CartItem extends Product {
     quantity: number;
