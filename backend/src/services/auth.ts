@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { UserModel } from '../models';
 import type { User } from '@shared/types';
-import { prisma } from '@/config/database';
+import { prisma } from '../config/database';
 
 export class AuthService {
   private userModel: UserModel;
