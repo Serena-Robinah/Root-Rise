@@ -46,7 +46,7 @@ export class OrderController {
 
       // Send confirmation email
       try {
-        const { sendOrderConfirmation } = await import('../services/emailService');
+      const { sendOrderConfirmation } = require('../services/emailService');
         const order = await orderService.getOrderById(orderId);
         if (order && shippingInfo.email) {
           await sendOrderConfirmation(shippingInfo.email, {
@@ -83,7 +83,7 @@ export class OrderController {
 
       // Send status update email
       try {
-        const { sendOrderStatusUpdate } = await import('../services/emailService');
+        const { sendOrderStatusUpdate } = require('../services/emailService');
         const order = await orderService.getOrderById(Number(id));
         if (order && (order as any).user?.email) {
           await sendOrderStatusUpdate((order as any).user.email, {

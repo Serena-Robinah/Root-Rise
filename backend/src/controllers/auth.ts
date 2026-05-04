@@ -26,7 +26,7 @@ export class AuthController {
 
       // Send verification email
       try {
-        const { sendVerificationEmail } = await import('../services/emailService');
+        const { sendVerificationEmail } = require('../services/emailService');
         const baseUrl = `${req.protocol}://${req.get('host')}`;
         await sendVerificationEmail(email, { name, token: verificationToken, baseUrl });
       } catch (emailErr) {
