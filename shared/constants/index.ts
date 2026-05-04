@@ -20,10 +20,7 @@ export const CATEGORIES = [
   'Outerwear',
 ] as const;
 
-export const API_BASE_URL = (() => {
-  const viaImportMeta = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_API_URL);
-  return viaImportMeta ?? '';
-})();
+export const API_BASE_URL = (typeof process !== 'undefined' && (process as any).env?.API_URL) ? (process as any).env.API_URL : '';
 
 export const API_ENDPOINTS = {
   // Auth
