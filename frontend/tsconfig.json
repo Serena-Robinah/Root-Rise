@@ -18,8 +18,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@shared/types": ["../shared/types/index.ts"],
-      "@shared/constants": ["../shared/constants/index.ts"]
+      "@shared/types": ["../shared/types/index.ts", "./src/shared/types/index.ts"],
+"@shared/constants": ["../shared/constants/index.ts", "./src/shared/constants/index.ts"]
     }
   },
   "include": ["src"],

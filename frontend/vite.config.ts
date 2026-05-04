@@ -8,7 +8,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@shared': path.resolve(__dirname, process.env.NODE_ENV === 'production' ? './src/shared' : '../shared'),
+      '@shared/types': path.resolve(__dirname, process.env.NODE_ENV === 'production' ? './src/shared/types' : '../shared/types'),
+'@shared/constants': path.resolve(__dirname, process.env.NODE_ENV === 'production' ? './src/shared/constants' : '../shared/constants'),
     },
   },
   server: {
