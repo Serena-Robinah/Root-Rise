@@ -6,6 +6,7 @@ import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import { motion } from 'motion/react';
 import AuthModal from './AuthModal';
+import { API_BASE_URL } from '../config';
 
 interface ProductCardProps {
   product: Product;
@@ -25,7 +26,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     >
       <div className="relative aspect-[4/5] overflow-hidden">
         <img
-          src={product.image_url?.startsWith('http') ? product.image_url : `http://localhost:3000${product.image_url}`}
+          src={product.image_url?.startsWith('http') ? product.image_url : `${API_BASE_URL}${product.image_url}`}
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           referrerPolicy="no-referrer"
