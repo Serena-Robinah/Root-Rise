@@ -4,7 +4,7 @@ services:
     runtime: node
     rootDir: backend
     buildCommand: npm install && npm run build
-    startCommand: npx prisma migrate deploy && node dist/server.js
+    startCommand: npx prisma migrate deploy && node dist/backend/src/server.js
     healthCheckPath: /
     envVars:
       - key: NODE_ENV
@@ -29,3 +29,19 @@ services:
         sync: false          # Set this manually in Render dashboard
       - key: CLOUDINARY_API_SECRET
         sync: false          # Set this manually in Render dashboard
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: BREVO_SENDER_EMAIL
+        sync: false
+      - key: BREVO_SENDER_NAME
+        sync: false
+      - key: BREVO_REPLY_TO
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
