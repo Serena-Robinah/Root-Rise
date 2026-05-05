@@ -40,8 +40,7 @@ export class ProductController {
       let image_url = req.body.image_url;
 
       if (req.file) {
-        // Construct the URL path to the uploaded file
-        image_url = `/uploads/${req.file.filename}`;
+        image_url = (req.file as any).path;
       }
 
       if (!name || isNaN(price)) {
@@ -76,7 +75,7 @@ export class ProductController {
       let image_url = req.body.image_url;
 
       if (req.file) {
-        image_url = `/uploads/${req.file.filename}`;
+        image_url = (req.file as any).path;
       }
 
       const productService = new ProductService(this.db);
