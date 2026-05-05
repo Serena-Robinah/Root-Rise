@@ -40,6 +40,7 @@ export class ProductController {
       let image_url = req.body.image_url;
 
       if (req.file) {
+        console.log('[Upload] req.file:', req.file);
         image_url = (req.file as any).path;
       }
 
