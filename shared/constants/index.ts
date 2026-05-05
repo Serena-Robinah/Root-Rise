@@ -26,6 +26,11 @@ export const API_ENDPOINTS = {
   // Auth
   SIGNUP: '/api/auth/signup',
   LOGIN: '/api/auth/login',
+  FORGOT_PASSWORD: '/api/auth/forgot-password',
+  RESET_PASSWORD: '/api/auth/reset-password',
+  ME: '/api/auth/me',
+  PROFILE: '/api/auth/profile',
+  VERIFY_EMAIL: (token: string) => `/api/auth/verify-email?token=${token}`,
 
   // Products
   PRODUCTS: '/api/products',

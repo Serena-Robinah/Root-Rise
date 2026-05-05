@@ -21,6 +21,7 @@ export default function Signup() {
   const navigate = useNavigate();
   const { setAuth } = useAuthStore();
   const [error, setError] = React.useState<string | null>(null);
+  const [notice, setNotice] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
 
   const redirect = searchParams.get('redirect') || '/';
@@ -34,8 +35,12 @@ export default function Signup() {
     setError(null);
     try {
       const result = await authService.signup(data.name, data.email, data.password);
-      setAuth(result.user, result.token);
-      navigate(redirect);
+      if (result.token) {
+        setAuth(result.user, result.token);
+        navigate(redirect);
+      } else {
+        setNotice(result.message || 'Account created. Please check your email to verify your account.');
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
     } finally {
@@ -59,6 +64,11 @@ export default function Signup() {
           <div className="bg-red-50 text-red-600 p-4 rounded-xl flex items-center space-x-3 text-sm font-medium">
             <AlertCircle className="w-5 h-5 shrink-0" />
             <span>{error}</span>
+          </div>
+        )}
+        {notice && (
+          <div className="bg-emerald-50 text-emerald-700 p-4 rounded-xl flex items-center space-x-3 text-sm font-medium">
+            <span>{notice}</span>
           </div>
         )}
 

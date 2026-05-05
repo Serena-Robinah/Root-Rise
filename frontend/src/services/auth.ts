@@ -11,6 +11,22 @@ export class AuthServiceClient {
     return apiClient.post(API_ENDPOINTS.LOGIN, { email, password });
   }
 
+  forgotPassword(email: string, baseUrl?: string): Promise<void> {
+    return apiClient.post(API_ENDPOINTS.FORGOT_PASSWORD, { email, baseUrl });
+  }
+
+  resetPassword(token: string, password: string): Promise<void> {
+    return apiClient.post(API_ENDPOINTS.RESET_PASSWORD, { token, password });
+  }
+
+  async me(): Promise<User> {
+    return apiClient.get(API_ENDPOINTS.ME);
+  }
+
+  updateProfile(updates: Partial<User>): Promise<User> {
+    return apiClient.put(API_ENDPOINTS.PROFILE, updates);
+  }
+
   saveToken(token: string): void {
     localStorage.setItem(JWT_TOKEN_KEY, token);
   }

@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import fetch from 'node-fetch';
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -7,6 +8,24 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASS,
   },
 });
+
+const BREVO_API_KEY = process.env.BREVO_API_KEY;
+
+async function sendViaBrevo(payload: any) {
+  if (!BREVO_API_KEY) throw new Error('Brevo API key missing');
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': BREVO_API_KEY,
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Brevo send failed: ${res.status} ${text}`);
+  }
+}
 
 export async function sendOrderConfirmation(to: string, order: {
   id: number;
@@ -22,11 +41,7 @@ export async function sendOrderConfirmation(to: string, order: {
     </tr>
   `).join('');
 
-  await transporter.sendMail({
-    from: `"Root & Rise Kids" <${process.env.EMAIL_USER}>`,
-    to,
-    subject: `Order Confirmed #${order.id} — Root & Rise Kids`,
-    html: `
+  const html = `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
         <div style="background-color: #2d6a4f; padding: 32px; text-align: center;">
           <h1 style="color: white; margin: 0; font-size: 28px;">Root & Rise Kids</h1>
@@ -60,7 +75,23 @@ export async function sendOrderConfirmation(to: string, order: {
           © 2024 Root & Rise Kids. All rights reserved.
         </div>
       </div>
-    `,
+    `;
+
+  if (BREVO_API_KEY) {
+    await sendViaBrevo({
+      sender: { name: 'Root & Rise Kids', email: process.env.EMAIL_USER },
+      to: [{ email: to }],
+      subject: `Order Confirmed #${order.id} — Root & Rise Kids`,
+      htmlContent: html,
+    }).catch(() => transporter.sendMail({ from: `"Root & Rise Kids" <${process.env.EMAIL_USER}>`, to, subject: `Order Confirmed #${order.id} — Root & Rise Kids`, html }));
+    return;
+  }
+
+  await transporter.sendMail({
+    from: `"Root & Rise Kids" <${process.env.EMAIL_USER}>`,
+    to,
+    subject: `Order Confirmed #${order.id} — Root & Rise Kids`,
+    html,
   });
 }
 
@@ -115,12 +146,7 @@ export async function sendVerificationEmail(to: string, data: {
   baseUrl: string;
 }) {
   const verificationLink = `${data.baseUrl}/api/auth/verify-email?token=${data.token}`;
-
-  await transporter.sendMail({
-    from: `"Root & Rise Kids" <${process.env.EMAIL_USER}>`,
-    to,
-    subject: `Verify your email — Root & Rise Kids`,
-    html: `
+  const html = `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
         <div style="background-color: #2d6a4f; padding: 32px; text-align: center;">
           <h1 style="color: white; margin: 0; font-size: 28px;">Root & Rise Kids</h1>
@@ -141,6 +167,54 @@ export async function sendVerificationEmail(to: string, data: {
           © 2024 Root & Rise Kids. All rights reserved.
         </div>
       </div>
-    `,
+    `;
+
+  if (BREVO_API_KEY) {
+    await sendViaBrevo({
+      sender: { name: 'Root & Rise Kids', email: process.env.EMAIL_USER },
+      to: [{ email: to }],
+      subject: `Verify your email — Root & Rise Kids`,
+      htmlContent: html,
+    }).catch(() => transporter.sendMail({ from: `"Root & Rise Kids" <${process.env.EMAIL_USER}>`, to, subject: `Verify your email — Root & Rise Kids`, html }));
+    return;
+  }
+
+  await transporter.sendMail({
+    from: `"Root & Rise Kids" <${process.env.EMAIL_USER}>`,
+    to,
+    subject: `Verify your email — Root & Rise Kids`,
+    html,
   });
+}
+
+export async function sendPasswordResetEmail(to: string, data: { name: string; token: string; baseUrl: string }) {
+  const resetLink = `${data.baseUrl}/reset-password?token=${data.token}`;
+  const html = `
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+      <div style="background-color: #2d6a4f; padding: 32px; text-align: center;">
+        <h1 style="color: white; margin: 0; font-size: 28px;">Root & Rise Kids</h1>
+      </div>
+      <div style="padding: 32px;">
+        <h2 style="color: #2d6a4f;">Reset your password</h2>
+        <p>Hi ${data.name},</p>
+        <p>Click the button below to reset your password. This link will expire in 1 hour.</p>
+        <div style="text-align: center; margin: 32px 0;">
+          <a href="${resetLink}" style="background-color: #f4845f; color: white; padding: 16px 32px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 16px;">Reset Password</a>
+        </div>
+        <p style="color: #666;">If you didn't request a password reset, ignore this email.</p>
+      </div>
+    </div>
+  `;
+
+  if (BREVO_API_KEY) {
+    await sendViaBrevo({
+      sender: { name: 'Root & Rise Kids', email: process.env.EMAIL_USER },
+      to: [{ email: to }],
+      subject: `Reset your password — Root & Rise Kids`,
+      htmlContent: html,
+    }).catch(() => transporter.sendMail({ from: `"Root & Rise Kids" <${process.env.EMAIL_USER}>`, to, subject: `Reset your password — Root & Rise Kids`, html }));
+    return;
+  }
+
+  await transporter.sendMail({ from: `"Root & Rise Kids" <${process.env.EMAIL_USER}>`, to, subject: `Reset your password — Root & Rise Kids`, html });
 }

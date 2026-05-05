@@ -3,7 +3,14 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function initializeDatabase() {
-  await prisma.$connect();
+  try {
+    await prisma.$connect();
+    console.log('Database connected');
+  } catch (err) {
+    console.error('Failed to connect to database at startup:', err);
+    // Don't rethrow — allow server to start for local dev and return useful
+    // error messages from endpoints that depend on the DB.
+  }
 }
 
 export function getDatabase() {
