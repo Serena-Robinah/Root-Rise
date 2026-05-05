@@ -31,11 +31,13 @@ export default function Profile() {
   const onSubmit = async (data: Form) => {
     setLoading(true); setStatus(null);
     try {
-      const updated = await authService.updateProfile(data as any);
+      const updates: any = { name: data.name, email: data.email };
+      if (data.password) updates.password = data.password;
+      const updated = await authService.updateProfile(updates);
       authService.saveUser(updated as any);
-      setStatus('Profile updated');
+      setStatus('Profile updated successfully');
     } catch (err) {
-      setStatus('Update failed');
+      setStatus(err instanceof Error ? err.message : 'Update failed');
     } finally { setLoading(false); }
   };
 

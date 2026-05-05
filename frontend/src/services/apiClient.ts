@@ -1,4 +1,4 @@
-import { API_ENDPOINTS } from '@shared/constants';
+import { API_ENDPOINTS, JWT_TOKEN_KEY } from '@shared/constants';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? '';
 
@@ -21,13 +21,16 @@ class ApiClient {
       headers['Content-Type'] = 'application/json';
     }
 
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+    // Use explicitly passed token, or fall back to stored JWT token
+    const authToken = token ?? localStorage.getItem(JWT_TOKEN_KEY);
+    if (authToken) {
+      headers['Authorization'] = `Bearer ${authToken}`;
     }
 
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method,
       headers,
+      cache: 'no-store',
       body: data instanceof FormData
         ? data
         : data ? JSON.stringify(data) : undefined,

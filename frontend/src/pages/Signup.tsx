@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Mail, Lock, User, ArrowRight, AlertCircle } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
 import { useAuthStore } from '../store/authStore';
 import { authService } from '../services';
 import { motion } from 'motion/react';
@@ -21,27 +22,47 @@ export default function Signup() {
   const navigate = useNavigate();
   const { setAuth } = useAuthStore();
   const [error, setError] = React.useState<string | null>(null);
-  const [notice, setNotice] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
+  const submittedRef = React.useRef(false);
 
   const redirect = searchParams.get('redirect') || '/';
+
+  const handleGoogleSuccess = async (credentialResponse: { credential?: string }) => {
+    if (!credentialResponse.credential) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await authService.googleLogin(credentialResponse.credential);
+      setAuth(result.user, result.token);
+      navigate(redirect);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Google sign-in failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const { register, handleSubmit, formState: { errors } } = useForm<SignupForm>({
     resolver: zodResolver(signupSchema),
   });
 
   const onSubmit = async (data: SignupForm) => {
+    if (submittedRef.current) return;
+    submittedRef.current = true;
     setLoading(true);
     setError(null);
     try {
       const result = await authService.signup(data.name, data.email, data.password);
       if (result.token) {
+        // Already verified (e.g. admin-created account)
         setAuth(result.user, result.token);
         navigate(redirect);
       } else {
-        setNotice(result.message || 'Account created. Please check your email to verify your account.');
+        // Redirect to verify-code page with email pre-filled
+        navigate(`/verify-code?email=${encodeURIComponent(data.email)}`);
       }
     } catch (err) {
+      submittedRef.current = false;
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
@@ -64,11 +85,6 @@ export default function Signup() {
           <div className="bg-red-50 text-red-600 p-4 rounded-xl flex items-center space-x-3 text-sm font-medium">
             <AlertCircle className="w-5 h-5 shrink-0" />
             <span>{error}</span>
-          </div>
-        )}
-        {notice && (
-          <div className="bg-emerald-50 text-emerald-700 p-4 rounded-xl flex items-center space-x-3 text-sm font-medium">
-            <span>{notice}</span>
           </div>
         )}
 
@@ -132,6 +148,28 @@ export default function Signup() {
               Login here
             </Link>
           </p>
+        </div>
+
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-zinc-200" />
+          </div>
+          <div className="relative flex justify-center text-xs text-zinc-400">
+            <span className="bg-white px-3">or sign up with</span>
+          </div>
+        </div>
+
+        <div className="flex justify-center">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => setError('Google sign-in failed. Please try again.')}
+            useOneTap={false}
+            shape="rectangular"
+            theme="outline"
+            size="large"
+            text="signup_with"
+            width="368"
+          />
         </div>
       </motion.div>
     </div>

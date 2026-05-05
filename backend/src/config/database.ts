@@ -1,21 +1,32 @@
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+    },
+  },
+});
+
+async function connectWithRetry(attempts = 5, delayMs = 2000): Promise<void> {
+  for (let i = 1; i <= attempts; i++) {
+    try {
+      await prisma.$connect();
+      console.log('Database connected');
+      return;
+    } catch (err: any) {
+      console.warn(`[DB] Connection attempt ${i}/${attempts} failed: ${err.message}`);
+      if (i < attempts) await new Promise(r => setTimeout(r, delayMs));
+    }
+  }
+  console.error('[DB] Could not connect after', attempts, 'attempts. Server will start anyway.');
+}
 
 export async function initializeDatabase() {
-  try {
-    await prisma.$connect();
-    console.log('Database connected');
-  } catch (err) {
-    console.error('Failed to connect to database at startup:', err);
-    // Don't rethrow — allow server to start for local dev and return useful
-    // error messages from endpoints that depend on the DB.
-  }
+  await connectWithRetry();
 }
 
 export function getDatabase() {
-  // For backward compatibility with code that expects a DB instance argument,
-  // return the Prisma client directly.
   return prisma;
 }
 

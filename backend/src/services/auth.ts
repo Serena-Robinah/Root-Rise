@@ -3,7 +3,7 @@ import { UserModel } from '../models';
 import type { User } from '@shared/types';
 import { prisma } from '../config/database';
 import crypto from 'crypto';
-import { sendPasswordResetEmail } from './emailService';
+import { sendPasswordResetEmail, sendVerificationEmail } from './emailService';
 
 export class AuthService {
   private userModel: UserModel;
@@ -13,9 +13,20 @@ export class AuthService {
   }
 
   async signup(name: string, email: string, password: string, verificationToken: string): Promise<Omit<User, 'password'>> {
-  // Prevent creating duplicate users — check first
   const existing = await this.userModel.findByEmail(email) as any;
-  if (existing) throw new Error('Email already in use');
+  if (existing) {
+    // If email exists but is not yet verified, allow re-signup:
+    // update the name, password and token so they can try again
+    if (!existing.email_verified) {
+      const hashedPassword = bcrypt.hashSync(password, 10);
+      await prisma.user.update({
+        where: { id: existing.id },
+        data: { name, password_hash: hashedPassword, verification_token: verificationToken } as any,
+      });
+      return { id: existing.id, name, email, role: existing.role, email_verified: false };
+    }
+    throw new Error('Email already in use');
+  }
   const hashedPassword = bcrypt.hashSync(password, 10);
   const id = await this.userModel.create(name, email, hashedPassword, 'customer', verificationToken);
   return { id, name, email, role: 'customer', email_verified: false };
@@ -67,14 +78,50 @@ async verifyEmail(token: string): Promise<void> {
 
   async login(email: string, password: string): Promise<Omit<User, 'password'> | null> {
     const user = (await this.userModel.findByEmail(email)) as any;
-    if (user && bcrypt.compareSync(password, user.password_hash)) {
-      const { password_hash, ...userWithoutPassword } = user;
-      return userWithoutPassword;
+    if (!user) return null;
+    if (!user.password_hash) {
+      // This is a Google-only account
+      throw new Error('This account uses Google Sign-In. Please click "Continue with Google".');
     }
-    return null;
+    if (!bcrypt.compareSync(password, user.password_hash)) return null;
+    // Admins can always log in regardless of email_verified
+    if (user.role !== 'admin' && !user.email_verified) {
+      throw new Error('Please verify your email before logging in. Check your inbox or resend the verification email.');
+    }
+    const { password_hash, ...userWithoutPassword } = user;
+    return userWithoutPassword;
   }
 
   async getUserById(id: number): Promise<Omit<User, 'password/passwordHash'> | null> {
     return this.userModel.findById(id) as Promise<any>;
+  }
+
+  async loginWithGoogle(googleId: string, email: string, name: string): Promise<Omit<User, 'password'>> {
+    // Try to find by google_id first, then by email
+    let user = await prisma.user.findFirst({ where: { google_id: googleId } as any }) as any;
+    if (!user) {
+      user = await prisma.user.findFirst({ where: { email } }) as any;
+      if (user) {
+        // Existing email/password account — link it to Google
+        await prisma.user.update({ where: { id: user.id }, data: { google_id: googleId, email_verified: true } as any });
+        user.google_id = googleId;
+        user.email_verified = true;
+      } else {
+        // Brand new user via Google
+        user = await prisma.user.create({
+          data: { name, email, password_hash: null, google_id: googleId, email_verified: true, role: 'customer' } as any,
+        }) as any;
+      }
+    }
+    const { password_hash, verification_token, password_reset_token, password_reset_expires, ...safeUser } = user;
+    return safeUser;
+  }
+
+  async resendVerificationEmail(email: string, frontendUrl: string): Promise<void> {
+    const user = await this.userModel.findByEmail(email) as any;
+    if (!user || user.email_verified) return; // silently ignore if not found or already verified
+    const token = crypto.randomBytes(32).toString('hex');
+    await prisma.user.update({ where: { id: user.id }, data: { verification_token: token } as any });
+    await sendVerificationEmail(user.email, { name: user.name, token, baseUrl: frontendUrl });
   }
 }

@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
 import { useAuthStore } from '../store/authStore';
 import { authService } from '../services';
 import { motion } from 'motion/react';
@@ -20,9 +21,25 @@ export default function Login() {
   const navigate = useNavigate();
   const { setAuth } = useAuthStore();
   const [error, setError] = React.useState<string | null>(null);
+  const [unverified, setUnverified] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
   const redirect = searchParams.get('redirect') || '/';
+
+  const handleGoogleSuccess = async (credentialResponse: { credential?: string }) => {
+    if (!credentialResponse.credential) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await authService.googleLogin(credentialResponse.credential);
+      setAuth(result.user, result.token);
+      navigate(redirect);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Google sign-in failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -31,12 +48,17 @@ export default function Login() {
   const onSubmit = async (data: LoginForm) => {
     setLoading(true);
     setError(null);
+    setUnverified(false);
     try {
       const result = await authService.login(data.email, data.password);
       setAuth(result.user, result.token);
       navigate(redirect);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+      const msg = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
+      if (msg.toLowerCase().includes('verify your email')) {
+        setUnverified(true);
+      }
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -55,9 +77,16 @@ export default function Login() {
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-600 p-4 rounded-xl flex items-center space-x-3 text-sm font-medium">
-            <AlertCircle className="w-5 h-5 shrink-0" />
-            <span>{error}</span>
+          <div className="bg-red-50 text-red-600 p-4 rounded-xl flex flex-col space-y-2 text-sm font-medium">
+            <div className="flex items-center space-x-3">
+              <AlertCircle className="w-5 h-5 shrink-0" />
+              <span>{error}</span>
+            </div>
+            {unverified && (
+              <Link to="/verify-code" className="underline text-red-700 text-xs ml-8">
+                Resend verification email
+              </Link>
+            )}
           </div>
         )}
 
@@ -77,7 +106,12 @@ export default function Login() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-bold text-zinc-700 ml-1">Password</label>
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-bold text-zinc-700 ml-1">Password</label>
+              <Link to="/forgot-password" className="text-xs text-primary-green hover:underline">
+                Forgot password?
+              </Link>
+            </div>
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
               <input 
@@ -107,6 +141,28 @@ export default function Login() {
               Sign up free
             </Link>
           </p>
+        </div>
+
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-zinc-200" />
+          </div>
+          <div className="relative flex justify-center text-xs text-zinc-400">
+            <span className="bg-white px-3">or continue with</span>
+          </div>
+        </div>
+
+        <div className="flex justify-center">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => setError('Google sign-in failed. Please try again.')}
+            useOneTap={false}
+            shape="rectangular"
+            theme="outline"
+            size="large"
+            text="continue_with"
+            width="368"
+          />
         </div>
       </motion.div>
     </div>

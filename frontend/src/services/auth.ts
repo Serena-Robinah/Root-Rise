@@ -11,6 +11,10 @@ export class AuthServiceClient {
     return apiClient.post(API_ENDPOINTS.LOGIN, { email, password });
   }
 
+  googleLogin(credential: string): Promise<AuthResponse> {
+    return apiClient.post('/api/auth/google', { credential });
+  }
+
   forgotPassword(email: string, baseUrl?: string): Promise<void> {
     return apiClient.post(API_ENDPOINTS.FORGOT_PASSWORD, { email, baseUrl });
   }
@@ -20,11 +24,17 @@ export class AuthServiceClient {
   }
 
   async me(): Promise<User> {
-    return apiClient.get(API_ENDPOINTS.ME);
+    const data: { user: User } = await apiClient.get(API_ENDPOINTS.ME);
+    return data.user;
   }
 
-  updateProfile(updates: Partial<User>): Promise<User> {
-    return apiClient.put(API_ENDPOINTS.PROFILE, updates);
+  updateProfile(updates: Partial<User & { password?: string }>): Promise<User> {
+    return apiClient.put<{ user: User }>(API_ENDPOINTS.PROFILE, updates)
+      .then(data => data.user);
+  }
+
+  resendVerification(email: string): Promise<{ message: string }> {
+    return apiClient.post('/api/auth/resend-verification', { email });
   }
 
   saveToken(token: string): void {

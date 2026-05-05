@@ -51,6 +51,7 @@ export interface OrderItem {
 export interface AuthResponse {
   user: Omit<User, 'password_hash'>;
   token: string;
+  message?: string;
 }
 
 export interface ApiResponse<T = any> {

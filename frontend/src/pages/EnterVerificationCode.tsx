@@ -1,12 +1,13 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function EnterVerificationCode() {
+  const [searchParams] = useSearchParams();
   const [token, setToken] = React.useState('');
   const [message, setMessage] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [showResend, setShowResend] = React.useState(false);
-  const [email, setEmail] = React.useState('');
+  const [email, setEmail] = React.useState(searchParams.get('email') ?? '');
   const [resendMessage, setResendMessage] = React.useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -53,52 +54,64 @@ export default function EnterVerificationCode() {
   };
 
   return (
-    <div className="min-h-[60vh] flex items-center justify-center">
-      <div className="bg-white p-8 rounded-xl shadow-md max-w-md w-full">
-        <h2 className="text-2xl font-bold">Enter Verification Code</h2>
-        <form onSubmit={submit} className="mt-4">
-          <label className="block text-sm text-zinc-600">Verification Code</label>
-          <input
-            className="w-full border rounded px-3 py-2 mt-2"
-            value={token}
-            onChange={(e) => setToken(e.target.value)}
-            placeholder="Paste the code from your email"
-          />
-          {message && <p className="mt-3 text-sm text-red-600">{message}</p>}
-          <div className="mt-4 flex gap-2">
-            <button type="submit" className="btn-primary px-4 py-2" disabled={loading}>
-              {loading ? 'Verifying...' : 'Verify'}
+    <div className="min-h-[60vh] flex items-center justify-center px-4 py-12">
+      <div className="bg-white p-8 rounded-3xl shadow-xl max-w-md w-full space-y-6">
+        <div className="text-center space-y-2">
+          <h2 className="text-2xl font-display font-bold">Verify your email</h2>
+          <p className="text-zinc-500 text-sm">
+            We sent a verification link to{' '}
+            {email ? <strong className="text-zinc-700">{email}</strong> : 'your email address'}.
+            <br />Click the link in the email, or paste the token below.
+          </p>
+        </div>
+
+        <form onSubmit={submit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-bold text-zinc-700 ml-1 mb-1">Verification Token</label>
+            <input
+              className="w-full border border-zinc-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-green/20"
+              value={token}
+              onChange={(e) => setToken(e.target.value)}
+              placeholder="Paste the token from your email"
+            />
+          </div>
+          {message && (
+            <p className={`text-sm px-3 py-2 rounded-lg ${message.includes('success') || message.includes('verified') ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}`}>
+              {message}
+            </p>
+          )}
+          <div className="flex gap-3">
+            <button type="submit" className="btn-primary flex-1 py-3" disabled={loading}>
+              {loading ? 'Verifying...' : 'Verify Email'}
             </button>
-            <button type="button" className="btn-secondary px-4 py-2" onClick={() => navigate('/login')}>
+            <button type="button" className="btn-secondary px-5 py-3" onClick={() => navigate('/login')}>
               Cancel
             </button>
           </div>
         </form>
 
-        <div className="mt-6 border-t pt-4">
-          <button className="text-sm text-blue-600" onClick={() => setShowResend((s) => !s)}>
-            {showResend ? 'Hide' : 'Resend verification email'}
-          </button>
-          {showResend && (
-            <div className="mt-3">
-              <label className="block text-sm text-zinc-600">Email</label>
-              <input
-                className="w-full border rounded px-3 py-2 mt-2"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
-              />
-              <div className="mt-3 flex gap-2">
-                <button type="button" className="btn-primary px-4 py-2" onClick={resend}>
-                  Resend
-                </button>
-                <button type="button" className="btn-secondary px-4 py-2" onClick={() => setShowResend(false)}>
-                  Close
-                </button>
-              </div>
-              {resendMessage && <p className="mt-2 text-sm">{resendMessage}</p>}
-            </div>
-          )}
+        <div className="border-t pt-4">
+          <p className="text-sm text-zinc-500 text-center">Didn't receive the email?</p>
+          <div className="mt-3 space-y-2">
+            <input
+              className="w-full border border-zinc-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/20"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="your@email.com"
+            />
+            <button
+              type="button"
+              className="w-full btn-secondary py-3 text-sm"
+              onClick={resend}
+            >
+              Resend verification email
+            </button>
+            {resendMessage && (
+              <p className={`text-sm px-3 py-2 rounded-lg ${resendMessage.includes('resent') || resendMessage.includes('sent') ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}`}>
+                {resendMessage}
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </div>
