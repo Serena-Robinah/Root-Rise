@@ -10,9 +10,16 @@ import { authenticateAdmin } from './middleware/auth';
 
 const app = express();
 
-// Restrict CORS to the frontend origin if provided, fallback to localhost:5173 for dev
-const FRONTEND_ORIGIN = process.env.FRONTEND_URL || 'http://localhost:5173';
-app.use(cors({ origin: FRONTEND_ORIGIN, credentials: true }));
+// Read allowed origins from env FRONTEND_URLS (comma-separated)
+const allowed = (process.env.FRONTEND_URLS || 'http://localhost:5173').split(',');
+app.use(cors({
+  origin: (origin, cb) => {
+    // allow non-browser tools (e.g., curl) by default when origin is undefined
+    if (!origin) return cb(null, true);
+    return cb(null, allowed.includes(origin) ? origin : false);
+  },
+  credentials: true
+}));
 
 // Add COOP header to allow Google postMessage flows (One Tap / popup communication)
 app.use((_req, res, next) => {
