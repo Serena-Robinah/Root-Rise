@@ -97,19 +97,19 @@ async verifyEmail(token: string): Promise<void> {
   }
 
   async loginWithGoogle(googleId: string, email: string, name: string): Promise<Omit<User, 'password'>> {
-    // Try to find by google_id first, then by email
-    let user = await prisma.user.findFirst({ where: { google_id: googleId } as any }) as any;
+    // Try to find by googleId first, then by email
+    let user = await prisma.user.findFirst({ where: { googleId: googleId } as any }) as any;
     if (!user) {
       user = await prisma.user.findFirst({ where: { email } }) as any;
       if (user) {
         // Existing email/password account — link it to Google
-        await prisma.user.update({ where: { id: user.id }, data: { google_id: googleId, email_verified: true } as any });
-        user.google_id = googleId;
+        await prisma.user.update({ where: { id: user.id }, data: { googleId: googleId, email_verified: true } as any });
+        user.googleId = googleId;
         user.email_verified = true;
       } else {
         // Brand new user via Google
         user = await prisma.user.create({
-          data: { name, email, password_hash: null, google_id: googleId, email_verified: true, role: 'customer' } as any,
+          data: { name, email, password_hash: null, googleId: googleId, email_verified: true, role: 'customer' } as any,
         }) as any;
       }
     }
