@@ -12,7 +12,7 @@ model User {
   name               String
   email              String   @unique
   password_hash      String?
-  googleId           String?  @unique @map("google_id")
+  googleId String? @unique @map("google_id")
   role               String   @default("customer")
   email_verified     Boolean  @default(false)
   verification_token String?

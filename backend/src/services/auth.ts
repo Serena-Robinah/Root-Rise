@@ -47,6 +47,7 @@ async verifyEmail(token: string): Promise<void> {
     const token = crypto.randomBytes(32).toString('hex');
     const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
     await prisma.user.update({ where: { id: user.id }, data: { password_reset_token: token, password_reset_expires: expires } as any });
+    console.log('[AuthService] Password reset requested for', email, 'token=', token, 'expires=', expires.toISOString());
     try {
       await sendPasswordResetEmail(user.email, { name: user.name, token, baseUrl });
     } catch (emailErr) {

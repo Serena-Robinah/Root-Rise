@@ -8,8 +8,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@shared/types': path.resolve(__dirname, '../shared/types'),
-      '@shared/constants': path.resolve(__dirname, '../shared/constants'),
+      '@shared/types': path.resolve(__dirname, '../shared/types/index.ts'),
+      '@shared/constants': path.resolve(__dirname, '../shared/constants/index.ts'),
     },
   },
   server: {
