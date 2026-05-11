@@ -37,7 +37,7 @@ const justVerified = searchParams.get('verified') === 'true';
   </div>
 )}
       {/* Hero Section */}
-      <section className="relative h-[80vh] flex items-center overflow-hidden">
+      <section className="relative min-h-[70vh] md:min-h-[80vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?q=80&w=1920&h=1080&auto=format&fit=crop"
@@ -59,7 +59,7 @@ const justVerified = searchParams.get('verified') === 'true';
               <span className="inline-block bg-accent-orange/10 text-accent-orange px-4 py-1 rounded-full text-sm font-bold tracking-wider uppercase">
                 New Collection 2024
               </span>
-              <h1 className="text-6xl md:text-7xl font-display font-bold leading-tight">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight">
                 Adorable & Affordable finds for your <span className="text-accent-orange italic">little ones</span>
               </h1>
               <p className="text-xl text-zinc-600 leading-relaxed">
@@ -81,7 +81,7 @@ const justVerified = searchParams.get('verified') === 'true';
 
       {/* Features */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[
             { icon: ShieldCheck, title: 'Safe & Natural', desc: '100% organic materials' },
             { icon: Truck, title: 'Fast Delivery', desc: 'quick and safe delivery means' },
