@@ -6,6 +6,7 @@ import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import { motion } from 'motion/react';
 import AuthModal from '../components/AuthModal';
+import { productService } from '@/services';
 
 const formatUGX = (amount: number) => `UGX ${amount.toLocaleString()}`;
 
@@ -19,14 +20,22 @@ export default function ProductDetails() {
   const { user } = useAuthStore();
 
   React.useEffect(() => {
-    fetch(`/api/products/${id}`)
-      .then(res => res.json())
-      .then(data => {
-        setProduct(data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, [id]);
+  const loadProduct = async () => {
+    try {
+      if (!id) return;
+      const data = await productService.getById(parseInt(id));
+      console.log('Loaded product:', data);
+      setProduct(data);
+    } catch (error) {
+      console.error('Error loading product:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  loadProduct();
+}, [id]);
+
 
   if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   if (!product) return <div className="min-h-screen flex items-center justify-center">Product not found</div>;
