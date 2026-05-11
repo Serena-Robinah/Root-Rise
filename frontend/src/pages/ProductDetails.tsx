@@ -50,7 +50,7 @@ export default function ProductDetails() {
         <span>Back to Shop</span>
       </button>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 lg:gap-24">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -86,7 +86,7 @@ export default function ProductDetails() {
               </div>
               <span className="text-xs text-zinc-400 font-medium">(48 Reviews)</span>
             </div>
-            <h1 className="text-5xl font-display font-bold">{product.name}</h1>
+            <h1 className="text-3xl md:text-5xl font-display font-bold">{product.name}</h1>
             <p className="text-3xl font-bold text-primary-green">{formatUGX(product.price)}</p>
           </div>
 

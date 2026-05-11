@@ -86,13 +86,13 @@ export default function AdminOrders() {
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="text-3xl font-display font-bold text-primary-green">Order Management</h1>
-          <p className="text-zinc-500">Track and manage customer orders and delivery status.</p>
+          <h1 className="text-2xl md:text-3xl font-display font-bold text-primary-green">Order Management</h1>
+          <p className="text-sm text-zinc-500">Track and manage customer orders and delivery status.</p>
         </div>
         <div className="flex items-center space-x-4">
-          <FormControl size="small" className="w-48">
+          <FormControl size="small" className="w-full sm:w-48">
             <InputLabel>Filter Status</InputLabel>
             <Select 
               value={statusFilter} 
@@ -111,7 +111,7 @@ export default function AdminOrders() {
         </div>
       </div>
 
-      <TableContainer component={Paper} className="rounded-3xl shadow-sm border-none overflow-hidden">
+      <TableContainer component={Paper} className="rounded-3xl shadow-sm border-none overflow-x-auto">
         <Table>
           <TableHead className="bg-zinc-50">
             <TableRow>

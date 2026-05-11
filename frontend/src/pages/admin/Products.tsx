@@ -84,21 +84,21 @@ export default function AdminProducts() {
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="text-3xl font-display font-bold text-primary-green">Manage Products</h1>
-          <p className="text-zinc-500">Add, edit, or remove products from your catalog.</p>
+          <h1 className="text-2xl md:text-3xl font-display font-bold text-primary-green">Manage Products</h1>
+          <p className="text-sm text-zinc-500">Add, edit, or remove products from your catalog.</p>
         </div>
-        <button 
+        <button
           onClick={() => { setEditingProduct(null); setIsModalOpen(true); }}
-          className="btn-primary flex items-center space-x-2"
+          className="btn-primary flex items-center space-x-2 self-start sm:self-auto"
         >
           <Plus className="w-5 h-5" />
           <span>Add New Product</span>
         </button>
       </div>
 
-      <TableContainer component={Paper} className="rounded-3xl shadow-sm border-none overflow-hidden">
+      <TableContainer component={Paper} className="rounded-3xl shadow-sm border-none overflow-x-auto">
         <Table>
           <TableHead className="bg-zinc-50">
             <TableRow>
@@ -199,7 +199,7 @@ export default function AdminProducts() {
               defaultValue={editingProduct?.description} 
               variant="outlined"
             />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <TextField 
                 name="price" 
                 label="Price (UGX)" 
@@ -217,7 +217,7 @@ export default function AdminProducts() {
                 required 
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                <FormControl fullWidth>
                  <InputLabel>Category</InputLabel>
                  <Select name="category" defaultValue={editingProduct?.category || CATEGORIES[0]} label="Category">

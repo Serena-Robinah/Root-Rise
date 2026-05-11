@@ -129,12 +129,19 @@ export default function Shop() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        {/* Mobile filter backdrop */}
+        {isFilterOpen && (
+          <div
+            className="fixed inset-0 bg-black/40 z-40 md:hidden"
+            onClick={() => setIsFilterOpen(false)}
+          />
+        )}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8">
           {/* Sidebar Filters */}
           <aside
             className={`md:col-span-1 ${
               isFilterOpen ? 'block' : 'hidden md:block'
-            } fixed md:static inset-0 bg-white md:bg-transparent z-50 md:z-auto overflow-y-auto`}
+            } fixed md:static inset-y-0 left-0 right-0 bottom-0 top-0 w-4/5 max-w-xs md:w-auto bg-white md:bg-transparent z-50 md:z-auto overflow-y-auto shadow-2xl md:shadow-none`}
           >
             <div className="p-4 md:p-0 space-y-6">
               {/* Close button for mobile */}
