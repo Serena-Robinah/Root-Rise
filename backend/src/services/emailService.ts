@@ -161,6 +161,7 @@ export async function sendVerificationEmail(to: string, data: {
 
 export async function sendPasswordResetEmail(to: string, data: { name: string; token: string; baseUrl: string }) {
   const resetLink = `${data.baseUrl}/reset-password?token=${data.token}`;
+  console.log('[Email] Password reset link for', to, resetLink);
   const html = `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
       <div style="background-color: #2d6a4f; padding: 32px; text-align: center;">

@@ -10,7 +10,22 @@ import { authenticateAdmin } from './middleware/auth';
 
 const app = express();
 
-app.use(cors());
+// Read allowed origins from env FRONTEND_URLS (comma-separated)
+const allowed = (process.env.FRONTEND_URLS || 'http://localhost:5173').split(',');
+app.use(cors({
+  origin: (origin, cb) => {
+    // allow non-browser tools (e.g., curl) by default when origin is undefined
+    if (!origin) return cb(null, true);
+    return cb(null, allowed.includes(origin) ? origin : false);
+  },
+  credentials: true
+}));
+
+// Add COOP header to allow Google postMessage flows (One Tap / popup communication)
+app.use((_req, res, next) => {
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  next();
+});
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use('/uploads', express.static(path.join(process.cwd(), 'public/uploads')));

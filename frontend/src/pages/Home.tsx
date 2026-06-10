@@ -37,7 +37,7 @@ const justVerified = searchParams.get('verified') === 'true';
   </div>
 )}
       {/* Hero Section */}
-      <section className="relative h-[80vh] flex items-center overflow-hidden">
+      <section className="relative min-h-[70vh] md:min-h-[80vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?q=80&w=1920&h=1080&auto=format&fit=crop"
@@ -59,7 +59,7 @@ const justVerified = searchParams.get('verified') === 'true';
               <span className="inline-block bg-accent-orange/10 text-accent-orange px-4 py-1 rounded-full text-sm font-bold tracking-wider uppercase">
                 New Collection 2024
               </span>
-              <h1 className="text-6xl md:text-7xl font-display font-bold leading-tight">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight">
                 Adorable & Affordable finds for your <span className="text-accent-orange italic">little ones</span>
               </h1>
               <p className="text-xl text-zinc-600 leading-relaxed">
@@ -81,7 +81,7 @@ const justVerified = searchParams.get('verified') === 'true';
 
       {/* Features */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[
             { icon: ShieldCheck, title: 'Safe & Natural', desc: '100% organic materials' },
             { icon: Truck, title: 'Fast Delivery', desc: 'quick and safe delivery means' },
@@ -141,7 +141,7 @@ const justVerified = searchParams.get('verified') === 'true';
       {/* Featured Products */}
       <section className="bg-white py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="flex justify-between items-end">
+          <div className="flex flex-wrap justify-between items-end gap-4">
             <div className="space-y-2">
               <h2 className="text-4xl font-display font-bold">Featured Favorites</h2>
               <p className="text-zinc-500">Our most-loved pieces for your little ones.</p>
@@ -169,13 +169,13 @@ const justVerified = searchParams.get('verified') === 'true';
             referrerPolicy="no-referrer"
           />
           <div className="absolute inset-0 bg-primary-green/60" />
-          <div className="relative z-10 p-12 md:p-24 space-y-8 text-white max-w-2xl">
-            <h2 className="text-4xl md:text-5xl font-display font-bold">Join our community of happy parents</h2>
+          <div className="relative z-10 p-6 sm:p-12 md:p-24 space-y-8 text-white max-w-2xl">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold">Join our community of happy parents</h2>
             <p className="text-lg text-soft-cream/90">Sign up and make your first order!</p>
             {subscribed ? (
               <p className="text-accent-orange font-bold text-lg">🎉 Thank you for subscribing!</p>
             ) : (
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <input
                   type="email"
                   placeholder="Enter your email"
@@ -183,7 +183,7 @@ const justVerified = searchParams.get('verified') === 'true';
                   onChange={(e) => setEmail(e.target.value)}
                   className="flex-grow px-6 py-4 rounded-xl bg-white/10 border border-white/20 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-accent-orange"
                 />
-                <button onClick={() => email && setSubscribed(true)} className="btn-accent px-8">Subscribe</button>
+                <button onClick={() => email && setSubscribed(true)} className="btn-accent px-8 shrink-0">Subscribe</button>
               </div>
             )}
           </div>

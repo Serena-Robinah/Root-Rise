@@ -47,6 +47,7 @@ async verifyEmail(token: string): Promise<void> {
     const token = crypto.randomBytes(32).toString('hex');
     const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
     await prisma.user.update({ where: { id: user.id }, data: { password_reset_token: token, password_reset_expires: expires } as any });
+    console.log('[AuthService] Password reset requested for', email, 'token=', token, 'expires=', expires.toISOString());
     try {
       await sendPasswordResetEmail(user.email, { name: user.name, token, baseUrl });
     } catch (emailErr) {
@@ -97,38 +98,20 @@ async verifyEmail(token: string): Promise<void> {
   }
 
   async loginWithGoogle(googleId: string, email: string, name: string): Promise<Omit<User, 'password'>> {
-    // Prefer lookup by email (more likely to exist). Some Prisma clients may not include
-    // the `google_id` field if schema/gen isn't in sync; handle google-field reads/writes
-    // defensively to avoid crashing with "Unknown argument `google_id`".
-    let user: any = await prisma.user.findFirst({ where: { email } }) as any;
-
+    // Try to find by google_id first, then by email
+    let user = await prisma.user.findFirst({ where: { google_id: googleId } as any }) as any;
     if (!user) {
-      // Try to find by google_id if available on the client; ignore errors if field missing
-      try {
-        const byGoogle = await prisma.user.findFirst({ where: { google_id: googleId } as any }) as any;
-        if (byGoogle) user = byGoogle;
-      } catch (err) {
-        // ignore - client may not expose google_id
-      }
-    }
-
-    if (user) {
-      // If we found an existing email/password account, attempt to link the google id
-      try {
+      user = await prisma.user.findFirst({ where: { email } }) as any;
+      if (user) {
+        // Existing email/password account — link it to Google
         await prisma.user.update({ where: { id: user.id }, data: { google_id: googleId, email_verified: true } as any });
         user.google_id = googleId;
         user.email_verified = true;
-      } catch (err) {
-        // ignore write error (client may not support google_id)
-      }
-    } else {
-      // Create a new user for this Google account. Omit google_id if create would fail,
-      // but try to include it first and fall back if necessary.
-      try {
-        user = await prisma.user.create({ data: { name, email, password_hash: null, google_id: googleId, email_verified: true, role: 'customer' } as any }) as any;
-      } catch (err) {
-        // Fallback: create without google_id
-        user = await prisma.user.create({ data: { name, email, password_hash: null, email_verified: true, role: 'customer' } as any }) as any;
+      } else {
+        // Brand new user via Google
+        user = await prisma.user.create({
+          data: { name, email, password_hash: null, google_id: googleId, email_verified: true, role: 'customer' } as any,
+        }) as any;
       }
     }
     const { password_hash, verification_token, password_reset_token, password_reset_expires, ...safeUser } = user;

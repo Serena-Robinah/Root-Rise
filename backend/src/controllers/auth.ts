@@ -178,15 +178,23 @@ export class AuthController {
       const { credential } = req.body;
       if (!credential) { res.status(400).json({ error: 'Missing Google credential' }); return; }
 
+      // Temporary debug logs to help diagnose deployed env / token issues
+      console.log('[GoogleAuth] env GOOGLE_CLIENT_ID=', process.env.GOOGLE_CLIENT_ID);
+      console.log('[GoogleAuth] received credential:', credential ? `present (len=${credential.length})` : 'missing');
+
       const ticket = await googleClient.verifyIdToken({
         idToken: credential,
         audience: process.env.GOOGLE_CLIENT_ID,
       });
       const payload = ticket.getPayload();
+      console.log('[GoogleAuth] verifyIdToken returned payload keys:', payload ? Object.keys(payload) : payload);
       if (!payload || !payload.sub || !payload.email) {
         res.status(401).json({ error: 'Invalid Google token' });
         return;
       }
+
+      // Avoid logging sensitive tokens; log verified identifiers for debugging.
+      console.log('[GoogleAuth] verified Google account:', { sub: payload.sub, email: payload.email });
 
       const authService = new AuthService(this.db);
       const user = await authService.loginWithGoogle(payload.sub, payload.email, payload.name || payload.email);

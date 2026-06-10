@@ -21,7 +21,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
-  const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (!user || user.role !== 'admin') {
@@ -39,24 +39,40 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <div className="min-h-screen bg-zinc-50 flex">
+      {/* Mobile backdrop overlay */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-40 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside 
-        className={`bg-primary-green text-white transition-all duration-300 flex flex-col z-50 ${
-          isSidebarOpen ? 'w-64' : 'w-20'
-        } fixed inset-y-0 left-0 md:relative`}
+      <aside
+        className={`bg-primary-green text-white transition-all duration-300 flex flex-col z-50
+          fixed inset-y-0 left-0
+          md:relative md:translate-x-0
+          ${isSidebarOpen ? 'w-64 translate-x-0' : 'w-64 -translate-x-full md:w-20 md:translate-x-0'}
+        `}
       >
-        <div className="p-6 flex items-center justify-between">
-          <Link to="/" className={`flex items-center space-x-2 ${!isSidebarOpen && 'hidden'}`}>
-            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+        <div className="p-4 md:p-6 flex items-center justify-between">
+          <Link to="/" className={`flex items-center space-x-2 ${!isSidebarOpen && 'md:hidden'}`}>
+            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shrink-0">
               <span className="text-primary-green font-bold text-lg">R</span>
             </div>
-            <span className="text-xl font-display font-bold">Admin <span className="text-accent-orange">Panel</span></span>
+            <span className="text-xl font-display font-bold whitespace-nowrap">Admin <span className="text-accent-orange">Panel</span></span>
           </Link>
-          <button 
+          <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            className="p-2 hover:bg-white/10 rounded-lg transition-colors shrink-0 hidden md:block"
           >
-            {isSidebarOpen ? <X className="w-5 h-5 md:hidden" /> : <Menu className="w-5 h-5" />}
+            {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+          <button
+            onClick={() => setIsSidebarOpen(false)}
+            className="p-2 hover:bg-white/10 rounded-lg transition-colors shrink-0 md:hidden"
+          >
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -67,50 +83,65 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <Link
                 key={item.name}
                 to={item.path}
+                onClick={() => setIsSidebarOpen(false)}
                 className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${
-                  isActive 
-                    ? 'bg-accent-orange text-white shadow-lg' 
+                  isActive
+                    ? 'bg-accent-orange text-white shadow-lg'
                     : 'text-soft-cream/70 hover:bg-white/10 hover:text-white'
                 }`}
               >
                 <item.icon className="w-5 h-5 shrink-0" />
-                {isSidebarOpen && <span className="font-medium">{item.name}</span>}
-                {isActive && isSidebarOpen && <ChevronRight className="w-4 h-4 ml-auto" />}
+                <span className={`font-medium ${!isSidebarOpen ? 'md:hidden' : ''}`}>{item.name}</span>
+                {isActive && <ChevronRight className={`w-4 h-4 ml-auto ${!isSidebarOpen ? 'md:hidden' : ''}`} />}
               </Link>
             );
           })}
         </nav>
 
         <div className="p-4 border-t border-white/10">
-          <button 
+          <button
             onClick={() => { logout(); navigate('/login'); }}
-            className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-soft-cream/70 hover:bg-red-500/20 hover:text-red-400 transition-all w-full`}
+            className="flex items-center space-x-3 px-4 py-3 rounded-xl text-soft-cream/70 hover:bg-red-500/20 hover:text-red-400 transition-all w-full"
           >
             <LogOut className="w-5 h-5 shrink-0" />
-            {isSidebarOpen && <span className="font-medium">Logout</span>}
+            <span className={`font-medium ${!isSidebarOpen ? 'md:hidden' : ''}`}>Logout</span>
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
       <div className="flex-grow flex flex-col min-w-0">
-        <header className="h-20 bg-white border-b flex items-center justify-between px-8 sticky top-0 z-40">
-          <h2 className="text-xl font-display font-bold text-primary-green">
-            {menuItems.find(i => i.path === location.pathname)?.name || 'Admin'}
-          </h2>
-          
-          <div className="flex items-center space-x-4">
+        <header className="h-16 md:h-20 bg-white border-b flex items-center justify-between px-4 md:px-8 sticky top-0 z-40">
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="p-2 text-zinc-600 hover:bg-zinc-100 rounded-lg transition-colors md:hidden"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="p-2 text-zinc-600 hover:bg-zinc-100 rounded-lg transition-colors hidden md:block"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <h2 className="text-base md:text-xl font-display font-bold text-primary-green">
+              {menuItems.find(i => i.path === location.pathname)?.name || 'Admin'}
+            </h2>
+          </div>
+
+          <div className="flex items-center space-x-3">
             <div className="text-right hidden sm:block">
               <p className="text-sm font-bold text-zinc-800">{user.name}</p>
               <p className="text-xs text-zinc-400 uppercase tracking-widest font-bold">Administrator</p>
             </div>
-            <div className="w-10 h-10 bg-soft-cream rounded-full flex items-center justify-center text-primary-green">
-              <UserIcon className="w-6 h-6" />
+            <div className="w-9 h-9 md:w-10 md:h-10 bg-soft-cream rounded-full flex items-center justify-center text-primary-green">
+              <UserIcon className="w-5 h-5 md:w-6 md:h-6" />
             </div>
           </div>
         </header>
 
-        <main className="p-8 overflow-y-auto">
+        <main className="p-4 md:p-8 overflow-y-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}

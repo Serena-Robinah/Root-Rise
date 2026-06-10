@@ -7,6 +7,7 @@ class ApiClient {
 
   constructor(baseUrl: string = API_BASE_URL) {
     this.baseUrl = baseUrl;
+    console.log('[ApiClient] baseUrl =', this.baseUrl);
   }
 
   private async request<T>(
@@ -27,7 +28,9 @@ class ApiClient {
       headers['Authorization'] = `Bearer ${authToken}`;
     }
 
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+    const fullUrl = `${this.baseUrl}${endpoint}`;
+    console.log('[ApiClient] Request', method, fullUrl, data);
+    const response = await fetch(fullUrl, {
       method,
       headers,
       cache: 'no-store',

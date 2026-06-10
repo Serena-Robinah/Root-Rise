@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Eye } from 'lucide-react';
+import { ShoppingCart, Eye, Heart } from 'lucide-react';
 import type { Product } from '@shared/types';
 import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
@@ -16,66 +16,154 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { addItem } = useCartStore();
   const { user } = useAuthStore();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!user) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+    if (!user.email_verified) {
+      alert('Please verify your email before adding to cart.');
+      return;
+    }
+    addItem(product);
+  };
+
+  const imageUrl = product.image_url?.startsWith('http')
+    ? product.image_url
+    : `${API_BASE_URL}${product.image_url}`;
+
+  const inStock = product.stock > 0;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="card group"
-    >
-      <div className="relative aspect-[4/5] overflow-hidden">
-        <img
-          src={product.image_url?.startsWith('http') ? product.image_url : `${API_BASE_URL}${product.image_url}`}
-          alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-          referrerPolicy="no-referrer"
-        />
-        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-4">
-          <Link
-            to={`/product/${product.id}`}
-            className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-primary-green hover:bg-primary-green hover:text-white transition-all shadow-lg"
-          >
-            <Eye className="w-6 h-6" />
-          </Link>
-          <button
-            onClick={() => {
-              if (!user) { setIsAuthModalOpen(true); return; }
-              if (!user.email_verified) { alert('Please verify your email before adding to cart.'); return; }
-              addItem(product);
-            }}
-            className="w-12 h-12 bg-accent-orange rounded-full flex items-center justify-center text-white hover:scale-110 transition-all shadow-lg"
-          >
-            <ShoppingCart className="w-6 h-6" />
-          </button>
-        </div>
-        {product.stock < 5 && product.stock > 0 && (
-          <span className="absolute top-4 left-4 bg-accent-orange text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
-            Low Stock
-          </span>
-        )}
-        {product.stock === 0 && (
-          <span className="absolute top-4 left-4 bg-zinc-500 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
-            Out of Stock
-          </span>
-        )}
-      </div>
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.3 }}
+        className="h-full"
+      >
+        <Link to={`/product/${product.id}`} className="block h-full">
+          <div className="card group h-full flex flex-col bg-white rounded-xl md:rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
+            {/* Image Container */}
+            <div className="relative aspect-[4/5] overflow-hidden bg-soft-cream flex-shrink-0">
+              <img
+                src={imageUrl}
+                alt={product.name}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+                loading="lazy"
+              />
 
-      <div className="p-4 space-y-1">
-        <div className="flex justify-between items-start">
-          <Link to={`/product/${product.id}`} className="font-display font-bold text-lg text-primary-green hover:text-accent-orange transition-colors">
-            {product.name}
-          </Link>
-          <span className="font-bold text-primary-green">UGX {product.price.toLocaleString()}</span>
-        </div>
-        <p className="text-zinc-500 text-sm line-clamp-1">{product.description}</p>
-        <div className="flex items-center space-x-2 pt-2">
-          <span className="text-[10px] font-bold bg-soft-cream text-primary-green px-2 py-0.5 rounded uppercase">{product.age_group} yrs</span>
-          <span className="text-[10px] font-bold bg-soft-cream text-primary-green px-2 py-0.5 rounded uppercase">{product.gender}</span>
-        </div>
-      </div>
+              {/* Overlay with Actions */}
+              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-3 md:space-x-4">
+                <Link
+                  to={`/product/${product.id}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="w-11 h-11 md:w-12 md:h-12 bg-white rounded-full flex items-center justify-center text-primary-green hover:bg-primary-green hover:text-white transition-all shadow-lg active:scale-95"
+                >
+                  <Eye className="w-5 h-5 md:w-6 md:h-6" />
+                </Link>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleAddToCart(e as any);
+                  }}
+                  disabled={!inStock}
+                  className={`w-11 h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all shadow-lg active:scale-95 ${
+                    inStock
+                      ? 'bg-accent-orange text-white hover:scale-110 cursor-pointer'
+                      : 'bg-zinc-300 text-zinc-500 cursor-not-allowed'
+                  }`}
+                >
+                  <ShoppingCart className="w-5 h-5 md:w-6 md:h-6" />
+                </button>
+              </div>
 
-      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
-    </motion.div>
+              {/* Stock Badge */}
+              <div className="absolute top-3 left-3 z-10">
+                {product.stock === 0 && (
+                  <span className="inline-block bg-red-500 text-white text-[10px] md:text-xs font-bold px-2.5 md:px-3 py-1 rounded-full uppercase tracking-wider">
+                    Out of Stock
+                  </span>
+                )}
+                {product.stock < 5 && product.stock > 0 && (
+                  <span className="inline-block bg-accent-orange text-white text-[10px] md:text-xs font-bold px-2.5 md:px-3 py-1 rounded-full uppercase tracking-wider">
+                    Only {product.stock} left
+                  </span>
+                )}
+                {product.stock >= 5 && (
+                  <span className="inline-block bg-primary-green text-white text-[10px] md:text-xs font-bold px-2.5 md:px-3 py-1 rounded-full uppercase tracking-wider">
+                    In Stock
+                  </span>
+                )}
+              </div>
+
+              {/* Wishlist Button */}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsWishlisted(!isWishlisted);
+                }}
+                className="absolute top-3 right-3 z-10 w-10 h-10 md:w-11 md:h-11 bg-white rounded-full shadow-md hover:bg-primary-green hover:text-white transition-all flex items-center justify-center active:scale-95"
+              >
+                <Heart
+                  className={`w-4 h-4 md:w-5 md:h-5 transition-all ${
+                    isWishlisted ? 'fill-red-500 text-red-500' : 'text-zinc-400'
+                  }`}
+                />
+              </button>
+            </div>
+
+            {/* Content Container */}
+            <div className="p-3 md:p-4 space-y-2 flex-grow flex flex-col justify-between">
+              {/* Product Info */}
+              <div className="space-y-2 flex-grow">
+                <div className="flex justify-between items-start gap-2">
+                  <h3 className="font-display font-bold text-sm md:text-base text-primary-green group-hover:text-accent-orange transition-colors line-clamp-2">
+                    {product.name}
+                  </h3>
+                </div>
+
+                {product.description && (
+                  <p className="text-zinc-500 text-xs md:text-sm line-clamp-1">
+                    {product.description}
+                  </p>
+                )}
+
+                {/* Age & Gender Tags */}
+                <div className="flex flex-wrap gap-1.5 pt-2">
+                  {product.age_group && (
+                    <span className="text-[9px] md:text-[10px] font-bold bg-soft-cream text-primary-green px-2 py-0.5 rounded uppercase whitespace-nowrap">
+                      {product.age_group} yrs
+                    </span>
+                  )}
+                  {product.gender && (
+                    <span className="text-[9px] md:text-[10px] font-bold bg-soft-cream text-primary-green px-2 py-0.5 rounded uppercase whitespace-nowrap">
+                      {product.gender}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Price */}
+              <div className="pt-3 border-t border-zinc-100">
+                <p className="font-bold text-sm md:text-base text-primary-green">
+                  UGX {product.price.toLocaleString()}
+                </p>
+              </div>
+            </div>
+          </div>
+        </Link>
+      </motion.div>
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
+    </>
   );
 }

@@ -6,6 +6,7 @@ import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import { motion } from 'motion/react';
 import AuthModal from '../components/AuthModal';
+import { productService } from '@/services';
 
 const formatUGX = (amount: number) => `UGX ${amount.toLocaleString()}`;
 
@@ -19,14 +20,22 @@ export default function ProductDetails() {
   const { user } = useAuthStore();
 
   React.useEffect(() => {
-    fetch(`/api/products/${id}`)
-      .then(res => res.json())
-      .then(data => {
-        setProduct(data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, [id]);
+  const loadProduct = async () => {
+    try {
+      if (!id) return;
+      const data = await productService.getById(parseInt(id));
+      console.log('Loaded product:', data);
+      setProduct(data);
+    } catch (error) {
+      console.error('Error loading product:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  loadProduct();
+}, [id]);
+
 
   if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   if (!product) return <div className="min-h-screen flex items-center justify-center">Product not found</div>;
@@ -41,7 +50,7 @@ export default function ProductDetails() {
         <span>Back to Shop</span>
       </button>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 lg:gap-24">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -77,7 +86,7 @@ export default function ProductDetails() {
               </div>
               <span className="text-xs text-zinc-400 font-medium">(48 Reviews)</span>
             </div>
-            <h1 className="text-5xl font-display font-bold">{product.name}</h1>
+            <h1 className="text-3xl md:text-5xl font-display font-bold">{product.name}</h1>
             <p className="text-3xl font-bold text-primary-green">{formatUGX(product.price)}</p>
           </div>
 

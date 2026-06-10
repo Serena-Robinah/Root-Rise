@@ -20,7 +20,7 @@ export default function Navbar() {
             <div className="w-10 h-10 bg-primary-green rounded-full flex items-center justify-center">
               <span className="text-white font-bold text-xl">R</span>
             </div>
-            <span className="text-2xl font-display font-bold text-primary-green">Root & Rise <span className="text-accent-orange">Kids</span></span>
+            <span className="text-lg sm:text-2xl font-display font-bold text-primary-green">Root & Rise <span className="text-accent-orange">Kids</span></span>
           </Link>
 
           {/* Desktop Menu */}
