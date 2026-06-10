@@ -1,6 +1,9 @@
 import React from 'react';
 import { X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
+import { useAuthStore } from '../store/authStore';
+import { authService } from '../services';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface AuthModalProps {
@@ -11,6 +14,7 @@ interface AuthModalProps {
 
 export default function AuthModal({ isOpen, onClose, redirectPath = '/checkout' }: AuthModalProps) {
   const navigate = useNavigate();
+  const { setAuth } = useAuthStore();
 
   if (!isOpen) return null;
 
@@ -57,6 +61,40 @@ export default function AuthModal({ isOpen, onClose, redirectPath = '/checkout' 
               >
                 Create New Account
               </button>
+            </div>
+
+            <div className="relative px-8 pt-4">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-zinc-200" />
+                </div>
+                <div className="relative flex justify-center text-xs text-zinc-400">
+                  <span className="bg-white px-3">or continue with</span>
+                </div>
+              </div>
+
+              <div className="flex justify-center pt-4">
+                <GoogleLogin
+                  onSuccess={async (res) => {
+                    const cred = (res as any)?.credential;
+                    if (!cred) return onClose();
+                    try {
+                      const result = await authService.googleLogin(cred);
+                      setAuth(result.user, result.token);
+                      navigate(redirectPath);
+                      onClose();
+                    } catch (err) {
+                      onClose();
+                    }
+                  }}
+                  onError={() => onClose()}
+                  useOneTap={false}
+                  shape="rectangular"
+                  theme="outline"
+                  size="large"
+                  text="continue_with"
+                />
+              </div>
             </div>
 
             <button 

@@ -54,6 +54,13 @@ cd ..
 cp .env.example .env
 ```
 
+### Google Single Sign-On (Google)
+
+1. Create OAuth credentials in Google Cloud Console and set the authorized redirect URI to your frontend origin.
+2. Add the backend client ID to the root `.env` as `GOOGLE_CLIENT_ID`.
+3. In the frontend folder, copy `frontend/.env.example` to `frontend/.env` and set `VITE_GOOGLE_CLIENT_ID` to the same client ID.
+
+
 ### 5. Start Development Servers
 ```bash
 npm run dev
