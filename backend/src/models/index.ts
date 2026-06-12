@@ -136,3 +136,65 @@ export class OrderItemModel {
 export function formatPrice(amount: number): string {
   return `UGX ${amount.toLocaleString('en-UG', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 }
+
+// Add these two classes to the bottom of your existing server/models/index.ts
+
+export class ProductLikeModel {
+  async getLikeCount(productId: number): Promise<number> {
+    return prisma.productLike.count({ where: { productId } });
+  }
+
+  async isLikedByUser(productId: number, userId: number): Promise<boolean> {
+    const like = await prisma.productLike.findUnique({
+      where: { productId_userId: { productId, userId } },
+    });
+    return !!like;
+  }
+
+  async toggleLike(productId: number, userId: number): Promise<{ liked: boolean; count: number }> {
+    const existing = await prisma.productLike.findUnique({
+      where: { productId_userId: { productId, userId } },
+    });
+
+    if (existing) {
+      await prisma.productLike.delete({
+        where: { productId_userId: { productId, userId } },
+      });
+    } else {
+      await prisma.productLike.create({ data: { productId, userId } });
+    }
+
+    const count = await this.getLikeCount(productId);
+    return { liked: !existing, count };
+  }
+}
+
+export class ProductReviewModel {
+  async getByProductId(productId: number) {
+    return prisma.productReview.findMany({
+      where: { productId },
+      include: { user: { select: { id: true, name: true } } },
+      orderBy: { created_at: 'desc' },
+    });
+  }
+
+  async getAverageRating(productId: number): Promise<number> {
+    const result = await prisma.productReview.aggregate({
+      where: { productId },
+      _avg: { rating: true },
+      _count: { rating: true },
+    });
+    return result._avg.rating || 0;
+  }
+
+  async hasReviewed(productId: number, userId: number): Promise<boolean> {
+    const r = await prisma.productReview.findUnique({
+      where: { productId_userId: { productId, userId } },
+    });
+    return !!r;
+  }
+
+  async create(productId: number, userId: number, rating: number, comment: string): Promise<void> {
+    await prisma.productReview.create({ data: { productId, userId, rating, comment } });
+  }
+}

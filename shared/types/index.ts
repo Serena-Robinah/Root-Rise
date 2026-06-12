@@ -1,5 +1,4 @@
 // Shared types between frontend and backend
-
 export interface Product {
   id: number;
   name: string;
@@ -10,6 +9,7 @@ export interface Product {
   gender: string;
   stock: number;
   image_url: string;
+  sizes?: string[];
 }
 
 export interface User {
@@ -17,12 +17,13 @@ export interface User {
   name: string;
   email: string;
   role: 'customer' | 'admin';
-  email_verified?: boolean;
+  email_verified: boolean;
   verification_token?: string;
 }
 
 export interface CartItem extends Product {
   quantity: number;
+  selectedSize?: string;
 }
 
 export interface Order {

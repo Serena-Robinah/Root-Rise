@@ -7,6 +7,7 @@ export class ProductService {
   constructor(db: any) {
     this.productModel = new ProductModel(db);
   }
+
   async getAllProducts(): Promise<Product[]> {
     return this.productModel.findAll();
   }
