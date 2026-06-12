@@ -8,30 +8,59 @@ generator client {
 }
 
 model User {
-  id                 Int      @id @default(autoincrement())
-  name               String
-  email              String   @unique
-  password_hash      String?
-  googleId String? @unique @map("google_id")
-  role               String   @default("customer")
-  email_verified     Boolean  @default(false)
-  verification_token String?
-  password_reset_token String?
-  password_reset_expires DateTime?
-  orders             Order[]
+  id                       Int              @id @default(autoincrement())
+  name                     String
+  email                    String           @unique
+  password_hash            String?
+  googleId                 String?          @unique @map("google_id")
+  role                     String           @default("customer")
+  email_verified           Boolean          @default(false)
+  verification_token       String?
+  password_reset_token     String?
+  password_reset_expires   DateTime?
+  orders                   Order[]
+  likes                    ProductLike[]
+  reviews                  ProductReview[]
 }
 
 model Product {
-  id        Int         @id @default(autoincrement())
-  name      String
+  id          Int             @id @default(autoincrement())
+  name        String
   description String?
-  price     Float
-  category  String?
-  age_group String?
-  gender    String?
-  stock     Int         @default(0)
-  image_url String?
-  orderItems OrderItem[]
+  price       Float
+  category    String?
+  age_group   String?
+  gender      String?
+  stock       Int             @default(0)
+  image_url   String?
+  sizes       String[]        @default(["XS", "S", "M", "L", "XL"])
+  orderItems  OrderItem[]
+  likes       ProductLike[]
+  reviews     ProductReview[]
+}
+
+model ProductLike {
+  id         Int      @id @default(autoincrement())
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId  Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  created_at DateTime @default(now())
+
+  @@unique([productId, userId])
+}
+
+model ProductReview {
+  id         Int      @id @default(autoincrement())
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId  Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  rating     Int
+  comment    String?
+  created_at DateTime @default(now())
+
+  @@unique([productId, userId])
 }
 
 model Order {

@@ -8,6 +8,12 @@ export interface Product {
   gender: string;
   stock: number;
   image_url: string;
+  sizes?: string[];
+}
+
+export interface CartItem extends Product {
+  quantity: number;
+  selectedSize?: string;
 }
 
 export interface User {
@@ -15,10 +21,7 @@ export interface User {
   name: string;
   email: string;
   role: 'user' | 'admin';
-}
-
-export interface CartItem extends Product {
-  quantity: number;
+  email_verified: boolean;
 }
 
 export interface Order {

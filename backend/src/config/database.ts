@@ -1,13 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL,
-    },
-  },
-});
+const prisma = new PrismaClient();
 
+ 
 async function connectWithRetry(attempts = 5, delayMs = 2000): Promise<void> {
   for (let i = 1; i <= attempts; i++) {
     try {
