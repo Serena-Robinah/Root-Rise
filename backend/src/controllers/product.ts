@@ -115,4 +115,16 @@ export class ProductController {
       res.status(500).json({ error: 'Failed to delete product' });
     }
   }
+
+  async getRelated(req: Request, res: Response): Promise<void> {
+  try {
+    const { id } = req.params;
+    const { age_group, category } = req.query as { age_group: string; category: string };
+    const productService = new ProductService(this.db);
+    const products = await productService.getRelatedProducts(Number(id), age_group, category);
+    res.json(products);
+  } catch {
+    res.status(500).json({ error: 'Failed to fetch related products' });
+  }
+}
 }
