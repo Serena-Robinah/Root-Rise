@@ -39,4 +39,8 @@ export class ProductService {
   async hasOrders(productId: number): Promise<boolean> {
     return (await this.productModel.countWithOrders(productId)) > 0;
   }
+
+  async getRelatedProducts(productId: number, ageGroup: string, category: string): Promise<Product[]> {
+  return this.productModel.findRelated(productId, ageGroup, category);
+}
 }

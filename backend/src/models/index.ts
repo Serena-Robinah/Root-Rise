@@ -59,6 +59,18 @@ export class ProductModel {
   async countWithOrders(productId: number): Promise<number> {
     return prisma.orderItem.count({ where: { productId } });
   }
+
+  async findRelated(productId: number, ageGroup: string, category: string, limit = 4): Promise<Product[]> {
+  return prisma.product.findMany({
+    where: {
+      age_group: ageGroup,
+      category: { not: category },
+      id: { not: productId },
+      stock: { gt: 0 },
+    },
+    take: limit,
+  }) as Promise<Product[]>;
+}
 }
 
 export class OrderModel {
@@ -197,4 +209,8 @@ export class ProductReviewModel {
   async create(productId: number, userId: number, rating: number, comment: string): Promise<void> {
     await prisma.productReview.create({ data: { productId, userId, rating, comment } });
   }
+
+
+  
 }
+
