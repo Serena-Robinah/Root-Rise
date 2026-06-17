@@ -74,6 +74,7 @@ model Order {
   address      String?
   created_at   DateTime    @default(now())
   items        OrderItem[]
+  
 }
 
 model OrderItem {
@@ -84,4 +85,5 @@ model OrderItem {
   productId Int
   quantity  Int
   price     Float
+  size      String?
 }

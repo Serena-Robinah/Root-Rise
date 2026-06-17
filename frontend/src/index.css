@@ -31,3 +31,12 @@
 .card {
   @apply bg-white rounded-2xl shadow-md overflow-hidden transition-all hover:shadow-lg;
 }
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-33.33%); }
+}
+
+.animate-marquee {
+  animation: marquee 25s linear infinite;
+}
