@@ -3,11 +3,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Mail, Lock, User, ArrowRight, AlertCircle } from 'lucide-react';
+
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuthStore } from '../store/authStore';
 import { authService } from '../services';
 import { motion } from 'motion/react';
+import { Mail, Lock, User, ArrowRight, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 const signupSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -24,8 +25,10 @@ export default function Signup() {
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
   const submittedRef = React.useRef(false);
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const redirect = searchParams.get('redirect') || '/';
+  
 
   const handleGoogleSuccess = async (credentialResponse: { credential?: string }) => {
     if (!credentialResponse.credential) return;
@@ -118,18 +121,25 @@ export default function Signup() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-bold text-zinc-700 ml-1">Password</label>
-            <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
-              <input 
-                {...register('password')}
-                type="password" 
-                placeholder="••••••••"
-                className="w-full pl-12 pr-4 py-4 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary-green/20"
-              />
-            </div>
-            {errors.password && <p className="text-xs text-red-500 ml-1">{errors.password.message}</p>}
-          </div>
+  <label className="text-sm font-bold text-zinc-700 ml-1">Password</label>
+  <div className="relative">
+    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
+    <input
+      {...register('password')}
+      type={showPassword ? 'text' : 'password'}
+      placeholder="••••••••"
+      className="w-full pl-12 pr-12 py-4 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary-green/20"
+    />
+    <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors"
+    >
+      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+    </button>
+  </div>
+  {errors.password && <p className="text-xs text-red-500 ml-1">{errors.password.message}</p>}
+</div>
 
           <button 
             type="submit" 
