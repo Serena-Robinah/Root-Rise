@@ -152,16 +152,19 @@ export default function Checkout() {
 
             <div className="max-h-64 overflow-y-auto space-y-4 pr-2">
               {items.map(item => (
-                <div key={item.id} className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    <img src={item.image_url} alt="" className="w-12 h-12 rounded-lg object-cover" referrerPolicy="no-referrer" />
-                    <div>
-                      <p className="font-bold text-sm text-primary-green line-clamp-1">{item.name}</p>
-                      <p className="text-xs text-zinc-400">Qty: {item.quantity}</p>
-                    </div>
-                  </div>
-                  <p className="font-bold text-sm text-primary-green">UGX{(item.price * item.quantity).toFixed(2)}</p>
-                </div>
+                <div key={`${item.id}-${(item as any).selectedSize}`} className="flex items-center justify-between gap-4">
+  <div className="flex items-center gap-4">
+    <img src={item.image_url} alt="" className="w-12 h-12 rounded-lg object-cover" referrerPolicy="no-referrer" />
+    <div>
+      <p className="font-bold text-sm text-primary-green line-clamp-1">{item.name}</p>
+      <p className="text-xs text-zinc-400">
+        Qty: {item.quantity}
+        {(item as any).selectedSize && <span className="ml-1 text-primary-green font-bold">· Size: {(item as any).selectedSize}</span>}
+      </p>
+    </div>
+  </div>
+  <p className="font-bold text-sm text-primary-green">UGX {(item.price * item.quantity).toLocaleString()}</p>
+</div>
               ))}
             </div>
 

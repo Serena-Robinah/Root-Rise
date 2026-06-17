@@ -33,26 +33,24 @@ export class OrderService {
   }
 
   async createOrder(
-    userId: number | null,
-    items: Array<{ id: number; quantity: number; price: number }>,
-    totalAmount: number,
-    shippingInfo: { fullName: string; phone: string; address: string }
-  ): Promise<number> {
-    const result = await prisma.$transaction(async (tx: any) => {
-      const o = await tx.order.create({ data: { userId, total_amount: totalAmount, full_name: shippingInfo.fullName, phone: shippingInfo.phone, address: shippingInfo.address } as any });
-      for (const item of items) {
-        await tx.orderItem.create({ data: { orderId: o.id, productId: item.id, quantity: item.quantity, price: item.price } });
-        // decrement stock
-        const prod = await tx.product.findUnique({ where: { id: item.id } });
-        if (prod) {
-          await tx.product.update({ where: { id: item.id }, data: { stock: prod.stock - item.quantity } as any });
-        }
+  userId: number | null,
+  items: Array<{ id: number; quantity: number; price: number; selectedSize?: string }>,
+  totalAmount: number,
+  shippingInfo: { fullName: string; phone: string; address: string }
+): Promise<number> {
+  const result = await prisma.$transaction(async (tx: any) => {
+    const o = await tx.order.create({ data: { userId, total_amount: totalAmount, full_name: shippingInfo.fullName, phone: shippingInfo.phone, address: shippingInfo.address } as any });
+    for (const item of items) {
+      await tx.orderItem.create({ data: { orderId: o.id, productId: item.id, quantity: item.quantity, price: item.price, size: item.selectedSize || null } });
+      const prod = await tx.product.findUnique({ where: { id: item.id } });
+      if (prod) {
+        await tx.product.update({ where: { id: item.id }, data: { stock: prod.stock - item.quantity } as any });
       }
-      return o.id;
-    });
-
-    return result as number;
-  }
+    }
+    return o.id;
+  });
+  return result as number;
+}
 
   async updateOrderStatus(id: number, status: OrderStatus): Promise<void> {
     await this.orderModel.updateStatus(id, status);

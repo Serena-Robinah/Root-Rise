@@ -230,7 +230,10 @@ export default function AdminOrders() {
                         <Avatar src={item.image_url} variant="rounded" className="w-12 h-12" />
                         <div>
                           <p className="font-bold text-primary-green">{item.product_name}</p>
-                          <p className="text-xs text-zinc-400">Qty: {item.quantity} × UGX {item.price.toLocaleString()}</p>
+                          <p className="text-xs text-zinc-400">
+  Qty: {item.quantity} × UGX {item.price.toLocaleString()}
+  {item.size && <span className="ml-2 bg-soft-cream text-primary-green font-black px-2 py-0.5 rounded-full">Size: {item.size}</span>}
+</p>
                         </div>
                       </div>
                       <p className="font-bold text-primary-green">UGX {(item.quantity * item.price).toLocaleString()}</p>

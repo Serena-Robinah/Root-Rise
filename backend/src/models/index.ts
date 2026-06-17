@@ -137,10 +137,9 @@ export class OrderItemModel {
     })) as unknown as OrderItem[];
   }
 
-  async create(orderId: number, productId: number, quantity: number, price: number): Promise<void> {
-    await prisma.orderItem.create({ data: { orderId, productId, quantity, price } });
-  }
-
+  async create(orderId: number, productId: number, quantity: number, price: number, size?: string): Promise<void> {
+  await prisma.orderItem.create({ data: { orderId, productId, quantity, price, size } });
+}
   async deleteByOrderId(orderId: number): Promise<void> {
     await prisma.orderItem.deleteMany({ where: { orderId } });
   }
