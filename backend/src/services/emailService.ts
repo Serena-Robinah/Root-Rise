@@ -1,30 +1,43 @@
-import nodemailer from 'nodemailer';
+//import nodemailer from 'nodemailer';
 
-// Brevo SMTP transporter — works with the xsmtpsib-... SMTP key
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
-  port: parseInt(process.env.SMTP_PORT || '587', 10),
-  secure: false, // STARTTLS on port 587
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+
 
 const SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || process.env.EMAIL_USER || '';
 const SENDER_NAME = process.env.BREVO_SENDER_NAME || 'Root & Rise Kids';
 const REPLY_TO = process.env.BREVO_REPLY_TO || SENDER_EMAIL;
 
 async function sendEmail(to: string, subject: string, html: string) {
-  console.log(`[Email] Sending "${subject}" to ${to} via Brevo SMTP`);
+  console.log(`[Email] Sending "${subject}" to ${to} via Brevo API`);
+
   try {
-    await transporter.sendMail({
-      from: `"${SENDER_NAME}" <${SENDER_EMAIL}>`,
-      replyTo: REPLY_TO,
-      to,
-      subject,
-      html,
-    });
+    const response = await fetch(
+      'https://api.brevo.com/v3/smtp/email',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'api-key': process.env.BREVO_API_KEY || '',
+        },
+        body: JSON.stringify({
+          sender: {
+            name: SENDER_NAME,
+            email: SENDER_EMAIL,
+          },
+          replyTo: {
+            email: REPLY_TO,
+          },
+          to: [{ email: to }],
+          subject,
+          htmlContent: html,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText);
+    }
+
     console.log(`[Email] Sent successfully to ${to}`);
   } catch (err) {
     console.error(`[Email] Failed to send to ${to}:`, err);
