@@ -99,7 +99,7 @@ export default function Home() {
             className="max-w-2xl space-y-4"
           >
             <span className="inline-block bg-accent-orange/10 text-accent-orange px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase">
-              New Collection 2024
+              New Collection 2026
             </span>
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight">
               Adorable & Affordable finds for your <span className="text-accent-orange italic">little ones</span>
@@ -112,7 +112,7 @@ export default function Home() {
                 Shop Now <ArrowRight className="w-4 h-4" />
               </Link>
               <Link to={`/shop?age=${AGE_NEWBORN}`} className="btn-accent text-sm md:text-base px-6 py-2.5 md:px-8 md:py-3">
-                View Newborns
+                View Newborn collection
               </Link>
             </div>
           </motion.div>

@@ -5,6 +5,7 @@ import AdminLayout from '../components/AdminLayout';
 import AdminDashboard from './admin/Dashboard';
 import AdminProducts from './admin/Products';
 import AdminOrders from './admin/Orders';
+import AdminReviews from './admin/Reviews';
 
 export default function Admin() {
   return (
@@ -14,6 +15,7 @@ export default function Admin() {
           <Route path="/" element={<AdminDashboard />} />
           <Route path="/products" element={<AdminProducts />} />
           <Route path="/orders" element={<AdminOrders />} />
+          <Route path="/reviews" element={<AdminReviews />} />
         </Routes>
       </AdminLayout>
     </SnackbarProvider>

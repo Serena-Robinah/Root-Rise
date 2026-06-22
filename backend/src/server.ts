@@ -8,7 +8,7 @@ import { createProductRoutes, createAdminProductRoutes } from './routes/product'
 import { createAuthRoutes } from './routes/auth';
 import { createOrderRoutes, createAdminOrderRoutes } from './routes/order';
 import { authenticateAdmin } from './middleware/auth';
-
+import { createAdminReviewRoutes } from './routes/reviews';
 const app = express();
 
 // Read allowed origins from env FRONTEND_URLS (comma-separated)
@@ -40,6 +40,7 @@ async function startServer() {
   app.use('/api/products', createProductRoutes(db));
   app.use('/api/auth', createAuthRoutes(db));
   app.use('/api/orders', createOrderRoutes(db));
+  app.use('/api/admin/reviews', authenticateAdmin, createAdminReviewRoutes());
 
   // Admin API
   app.use('/api/admin/products', authenticateAdmin, createAdminProductRoutes(db));
@@ -73,3 +74,4 @@ process.on('uncaughtException', (err) => {
 process.on('unhandledRejection', (reason) => {
   console.error('Unhandled rejection:', reason);
 });
+
