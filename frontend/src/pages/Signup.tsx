@@ -99,7 +99,7 @@ export default function Signup() {
               <input 
                 {...register('name')}
                 type="text" 
-                placeholder="Jane Doe"
+                placeholder="Enter your full name"
                 className="w-full pl-12 pr-4 py-4 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary-green/20"
               />
             </div>

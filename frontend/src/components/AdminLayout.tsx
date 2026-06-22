@@ -8,7 +8,8 @@ import {
   Menu, 
   X, 
   ChevronRight,
-  User as UserIcon
+  User as UserIcon,
+  MessageSquare
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { motion, AnimatePresence } from 'motion/react';
@@ -32,10 +33,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   if (!user || user.role !== 'admin') return null;
 
   const menuItems = [
-    { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
-    { name: 'Orders', path: '/admin/orders', icon: ShoppingBag },
-    { name: 'Products', path: '/admin/products', icon: Package },
-  ];
+  { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
+  { name: 'Orders', path: '/admin/orders', icon: ShoppingBag },
+  { name: 'Products', path: '/admin/products', icon: Package },
+  { name: 'Reviews', path: '/admin/reviews', icon: MessageSquare },
+];
 
   return (
     <div className="min-h-screen bg-zinc-50 flex">

@@ -48,6 +48,9 @@ export const API_ENDPOINTS = {
   ADMIN_PRODUCTS: '/api/admin/products',
   ADMIN_UPDATE_PRODUCT: (id: number) => `/api/admin/products/${id}`,
   ADMIN_DELETE_PRODUCT: (id: number) => `/api/admin/products/${id}`,
+ADMIN_REVIEWS: '/api/admin/reviews',
+ADMIN_DELETE_REVIEW: (id: number) => `/api/admin/reviews/${id}`,
+
 } as const;
 
 export const JWT_TOKEN_KEY = 'auth_token';
